@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Steven Lemonier">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="https://stevenlemonier.fr/img/title_powershell.jpg">
+    <meta property="twitter:image" content="https://stevenlemonier.fr/img/title_powershell.jpg" />
+    
+
+    
+    <meta name="title" content="Provision new VMs in an MCS catalog with Powershell" />
+    <meta property="og:title" content="Provision new VMs in an MCS catalog with Powershell" />
+    <meta property="twitter:title" content="Provision new VMs in an MCS catalog with Powershell" />
+    
+
+    
+    <meta name="description" content="Provision new VMs in an MCS catalog with Powershell">
+    <meta property="og:description" content="Provision new VMs in an MCS catalog with Powershell" />
+    <meta property="twitter:description" content="Provision new VMs in an MCS catalog with Powershell" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="Steven, Lemonier, Citrix, PowerShell, automation, CTA">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>Provision new VMs in an MCS catalog with Powershell-Steven Lemonier</title>
+
+    <link rel="canonical" href="/provision-new-vms-in-an-mcs-catalog-with-powershell/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link href="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@5.15.1/css/all.css" rel="stylesheet" type="text/css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Steven Lemonier</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                    
+		    
+                        <li><a href="/top/archive/">ARCHIVE</a></li>
+                    
+                        <li><a href="/top/about/">ABOUT</a></li>
+                    
+
+                    
+		    <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/title_powershell.jpg');
+        box-shadow: inset 0px 0px 300px 200px rgba(0,0,0,0.6);
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/citrix" title="Citrix">
+                            Citrix
+                        </a>
+                        
+                        <a class="tag" href="/tags/powershell" title="PowerShell">
+                            PowerShell
+                        </a>
+                        
+                    </div>
+                    <h1>Provision new VMs in an MCS catalog with Powershell</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                 Steven
+                             
+                            on 
+                            Friday, November 13, 2020
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <h1 id="introduction">Introduction</h1>
+<p>During a migration lasting several months and requiring to provision on a regular basis new VDI, I had to create several times a week new machines in two different MCS catalogs (one in each of our datacenters) in order to add them to the delivery group and have more.</p>
+<p>It is actually not a &ldquo;big deal&rdquo; but each time I face a task I have to do several times a day, a week, a month, I try to automatize it in PowerShell, even if it is something that requires less than a minute to do so. We never know which difficulty we may face during the scripting phase and there is always something new to learn, either about writing the script or about the infrastructure itself.</p>
+<p>To be fair, I first thought a Citrix cmdlet would have offer a simple way to provision new VMs in an MCS catalog (I never gave a look at the PowerShell&rsquo;s tab in the Studio). But it was not the case and provisioning new VMs requires actually a few steps in order to complete such task. And as my most preferred assistant did not find something really dynamic, and I mean in the target delivery group, the number of VMs to create, for an existing catalog (some script exist but create the catalog and the delivery group from scratch), I had to do it on my own. Such a shame, right? 😊</p>
+<p>I first started by doing it through the console, to have the step in mind and to follow them as I was scripting (like to avoid trying to add machines in a delivery group before creating them on hosting side for example&hellip;) and also to have some of the commands in this very helpful PowerShell&rsquo;s tab.</p>
+<p>I discovered you must:</p>
+<ul>
+<li>Find the Identity Pool to create machine account on Active Directory</li>
+<li>Create the machine account</li>
+<li>Provision the VM</li>
+<li>Add the VM to the catalog</li>
+<li>And finally add the machine to the delivery group</li>
+</ul>
+<p>All these steps are hidden behind the &ldquo;Add machine&rdquo; wizard which I never understood why it keeps asking for the naming convention and the target OU prior to the creation of new VMs. I mean, we set this at the catalog&rsquo;s creation&hellip; I could understand the purpose of confirming these parameters but if I want to use another naming convention or OU, I could simply create a new catalog, isn&rsquo;t it?</p>
+<p>Of course, between those steps, there are some parameters to gather to talk to the correct resource (like the Provisioning Scheme or the catalog ID for instance). Adding some steps to complete in order to provision new machines. To be honest, I started to write a script with static IDs only matching my configuration and then, I thought it could help some of you and I worked to have it entirely useable on any infrastructure, based on parameter to provide to the script.</p>
+<p>First, I started slowly, create X number of machines in a single catalog and add them a delivery group:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Powershell" data-lang="Powershell"><span style="display:flex;"><span>.\VDI_Provisionning.ps1 -VDICount 10 -Catalog <span style="color:#f1fa8c">&#34;Windows10&#34;</span> -DeliveryGroup <span style="color:#f1fa8c">&#34;Desktop&#34;</span>
+</span></span></code></pre></div><p>Then, I added the capability to manage several catalogs (remember, we have two datacenters, but it could work with as many as you might want):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-PowerShell" data-lang="PowerShell"><span style="display:flex;"><span>.\VDI_Provisionning.ps1 -VDICount 10 -Catalog <span style="color:#f1fa8c">&#34;DTC1&#34;</span>,<span style="color:#f1fa8c">&#34;DTC2&#34;</span> -DeliveryGroup <span style="color:#f1fa8c">&#34;Desktop&#34;</span>
+</span></span></code></pre></div><p>I thought about a -Split parameter in order to create the same number of VDI in each catalog. It takes the count and divide by the number of catalogs set in parameter (and return a natural number of course for the little smart guy who wanted to try with an odd number) :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-PowerShell" data-lang="PowerShell"><span style="display:flex;"><span>.\VDI_Provisionning.ps1 -VDICount 10 -Catalog <span style="color:#f1fa8c">&#34;DTC1&#34;</span>,<span style="color:#f1fa8c">&#34;DTC2&#34;</span> -Split -DeliveryGroup <span style="color:#f1fa8c">&#34;Desktop&#34;</span>
+</span></span></code></pre></div><p>Finally I added some additional switches to allow the script to be run on a computer that is not a delivery controller and to specify an output file for the log (by default, it transcripts in a file in current directory):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-PowerShell" data-lang="PowerShell"><span style="display:flex;"><span>.\ VDI_Provisionning.ps1 -DeliveryController <span style="color:#f1fa8c">&#34;CTXDDC01&#34;</span> -VDICount 10 -Catalog <span style="color:#f1fa8c">&#34;Windows10&#34;</span> -DeliveryGroup <span style="color:#f1fa8c">&#34;Desktop&#34;</span> -Log <span style="color:#f1fa8c">&#34;C:\temp\test.log&#34;</span>
+</span></span></code></pre></div><p>The script starts by checking all those parameters and the connection with the delivery controller before doing anything. I&rsquo;d rather spend time to check first than start processing and ending up with some orphaned objects (and having hard time to clean up the mess, sounds like a true story, right? 😰).</p>
+<p>Funny thing, it requires more lines to check the parameters than to create the machine! I guess I was dedicated to not break your configuration!</p>
+<p>If you give a close look, you may notice the script pauses before adding the VM(s) to the catalog. because I faced some issue when adding the virtual machine to the catalog on one delivery controller and not the other. I then remembered that there is a most preferred delivery controller to talk to the hosting infrastructure:</p>
+<p>
+  <img src="PreferredController.png" alt="Preferred Controller">
+
+</p>
+<p>And when you are not talking to the most preferred one when using Citrix cmdlets, the other delivery controllers could not have up-to-date information before a few seconds. Thus, I added 10 seconds sleep, could have been less but I&rsquo;d rather to be safe. Also, always first test your script in DEV and then on all your delivery controllers!
+And once it has done, here is how it looks:</p>
+<p>Pretty cool, huh?</p>
+<blockquote>
+<p>&ldquo;Enough talking! Where is the script?!&rdquo;</p>
+</blockquote>
+<p>Alright, alright, you&rsquo;ll find the latest version on Github, feel free to share your comments, your improvment&rsquo;s ideas or custom it your way!</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-PowerShell" data-lang="PowerShell"><span style="display:flex;"><span><span style="color:#6272a4">&lt;#
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> </span><span style="color:#f1fa8c">.Synopsis</span><span style="color:#6272a4">
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> Provision a given number of VM(s) in one or more MCS catalog(s) and assign the VM(s) to a delivery group.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> </span><span style="color:#f1fa8c">.Description</span><span style="color:#6272a4">
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> Provision a given number of VM(s).
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> This script supports to provision in several MCS catalogs.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> It also supports to attach the newly created VM(s) to a delivery group (only one is supported).
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> Finally, you can specify to split equally the VM(s) to provision into different MCS catalogs (optionnal).
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> </span><span style="color:#f1fa8c">.Parameter</span><span style="color:#6272a4"> DeliveryController
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> Specifiy the Delivery Controller to use for the provision
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> This parameter is optionnal, by default it will use with the local machine.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> </span><span style="color:#f1fa8c">.Parameter</span><span style="color:#6272a4"> VDICount
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> Specify how much VM(s) to provision (integer).
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> This parameter is mandatory.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> </span><span style="color:#f1fa8c">.Parameter</span><span style="color:#6272a4"> Catalog
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> Specify a list of MCS catalogs to provision the VM(s) to.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> This parameter is mandatory.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> </span><span style="color:#f1fa8c">.Parameter</span><span style="color:#6272a4"> Split
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> Split equally the number of VM(s) to provision into the MCS catalogs provided with -Catalog parameter.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> This paramater is optionnal.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> </span><span style="color:#f1fa8c">.Parameter</span><span style="color:#6272a4"> DeliveryGroup
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> Specifiy the DesktopGroup to attach to the newly created VM(s).
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> This parameter is mandatory.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> </span><span style="color:#f1fa8c">.Parameter</span><span style="color:#6272a4"> Log
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> Specifiy the output file for the logs.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> This parameter is optionnal, by default, it will create a file in the current directory.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> </span><span style="color:#f1fa8c">.Example</span><span style="color:#6272a4">
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> # Provision 10 VMs to the &#34;Windows 10&#34; catalog and assign them to the &#34;Desktop&#34; delivery group.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> VDI_Provisionning.ps1 -VDICount 10 -Catalog &#34;Windows10&#34; -DeliveryGroup &#34;Desktop&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> </span><span style="color:#f1fa8c">.Example</span><span style="color:#6272a4">
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> # Connect to &#34;CTXDDC01&#34; to provision 10 VMs to the &#34;Windows 10&#34; catalog and assign them to the &#34;Desktop&#34; delivery group.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> VDI_Provisionning.ps1 -DeliveryController &#34;CTXDDC01&#34; -VDICount 10 -Catalog &#34;Windows10&#34; -DeliveryGroup &#34;Desktop&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#f1fa8c">.Example</span><span style="color:#6272a4">
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> # Provision 10 VMs to the &#34;DTC1&#34; and &#34;DTC2&#34; catalogs    and assign them to the &#34;Desktop&#34; delivery group.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> VDI_Provisionning.ps1 -VDICount 10 -Catalog &#34;DTC1&#34;,&#34;DTC2&#34; -DeliveryGroup &#34;Desktop&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> </span><span style="color:#f1fa8c">.Example</span><span style="color:#6272a4">
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> # Provision 5 (10 split equally between two catalogs) VMs to the &#34;DTC1&#34; and &#34;DTC2&#34; catalogs, assign them 
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> to the &#34;Desktop&#34; delivery group and log the output in C:\Temp
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> VDI_Provisionning.ps1 -VDICount 10 -Catalog &#34;DTC1&#34;,&#34;DTC2&#34; -Split -DeliveryGroup &#34;Desktop&#34; -Log &#34;C:\temp\test.log&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">#&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>[<span style="color:#ff79c6">CmdletBinding</span>()]
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">Param</span>(
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># Declaring input variables for the script</span>
+</span></span><span style="display:flex;"><span>    [<span style="color:#ff79c6">Parameter</span>(<span style="color:#ff79c6">Mandatory</span>=<span style="color:#8be9fd;font-style:italic">$false</span>)] [string]<span style="color:#8be9fd;font-style:italic">$DeliveryController</span>,
+</span></span><span style="display:flex;"><span>    [<span style="color:#ff79c6">Parameter</span>(<span style="color:#ff79c6">Mandatory</span>=<span style="color:#8be9fd;font-style:italic">$true</span>)] [int]<span style="color:#8be9fd;font-style:italic">$VDICount</span>,
+</span></span><span style="display:flex;"><span>    [<span style="color:#ff79c6">Parameter</span>(<span style="color:#ff79c6">Mandatory</span>=<span style="color:#8be9fd;font-style:italic">$true</span>)] [string[]]<span style="color:#8be9fd;font-style:italic">$Catalog</span>,
+</span></span><span style="display:flex;"><span>    [<span style="color:#ff79c6">Parameter</span>(<span style="color:#ff79c6">Mandatory</span>=<span style="color:#8be9fd;font-style:italic">$false</span>)] [switch]<span style="color:#8be9fd;font-style:italic">$Split</span>,
+</span></span><span style="display:flex;"><span>    [<span style="color:#ff79c6">Parameter</span>(<span style="color:#ff79c6">Mandatory</span>=<span style="color:#8be9fd;font-style:italic">$true</span>)] [string]<span style="color:#8be9fd;font-style:italic">$DeliveryGroup</span>,
+</span></span><span style="display:flex;"><span>    [<span style="color:#ff79c6">Parameter</span>(<span style="color:#ff79c6">Mandatory</span>=<span style="color:#8be9fd;font-style:italic">$false</span>)][ValidateNotNullOrEmpty()] [string]<span style="color:#8be9fd;font-style:italic">$LogFile</span>=<span style="color:#f1fa8c">&#34;.\VDI_Provisionning.log&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#Start logging</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">Start-Transcript</span> -Path <span style="color:#8be9fd;font-style:italic">$LogFile</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#Setting variables prior to their usage is not mandatory</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">Set-StrictMode</span> -Version 2
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#Check Snapin can be loaded</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#Could be improved by only loading the necessary modules but it would not be compatible with version older than 1912</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Loading Citrix Snapin... &#34;</span> -NoNewline
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">if</span>(!(<span style="color:#8be9fd;font-style:italic">Add-PSSnapin</span> Citrix* -ErrorAction SilentlyContinue -PassThru )){
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Failed&#34;</span> -ForegroundColor Red
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Citrix Snapin cannot be loaded. Please, check the component is installed on the computer.&#34;</span> -ForegroundColor Red
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">#Stop logging</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Stop-Transcript</span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">break</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;OK&#34;</span> -ForegroundColor Green
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">################################################################################################</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#Checking the parameters</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">################################################################################################</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#Check if the DeliveryController parameter is set or if it has to use the local machine</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">if</span>(<span style="color:#8be9fd;font-style:italic">$DeliveryController</span>){
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">#Check if the parameter is a FQDN or not</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Trying to contact the Delivery Controller $DeliveryController... &#34;</span> -NoNewline
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span>(<span style="color:#8be9fd;font-style:italic">$DeliveryController</span> <span style="color:#ff79c6">-contains</span> <span style="color:#f1fa8c">&#34;.&#34;</span>){
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">$DDC</span> = <span style="color:#8be9fd;font-style:italic">Get-BrokerController</span> -DNSName <span style="color:#f1fa8c">&#34;$DeliveryController&#34;</span>
+</span></span><span style="display:flex;"><span>    } <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">$DDC</span> = <span style="color:#8be9fd;font-style:italic">Get-BrokerController</span> -DNSName <span style="color:#f1fa8c">&#34;$DeliveryController.$env:USERDNSDOMAIN&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>} <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Trying to contact the Delivery Controller $env:COMPUTERNAME... &#34;</span> -NoNewline
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">$DDC</span> = <span style="color:#8be9fd;font-style:italic">Get-BrokerController</span> -DNSName <span style="color:#f1fa8c">&#34;$env:COMPUTERNAME.$env:USERDNSDOMAIN&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">if</span>((<span style="color:#8be9fd;font-style:italic">$DDC</span>)){
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;OK&#34;</span> -ForegroundColor Green
+</span></span><span style="display:flex;"><span>} <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Failed&#34;</span> -ForegroundColor Red
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Cannot contact the Delivery Controller. Please, check the role is installed on the target computer and your account is allowed to communicate with it.&#34;</span> -ForegroundColor Red
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#Check if the catalog(s) exist(s)</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">$errorcount</span> = 0
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">$catalogcount</span> = 0
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">foreach</span>(<span style="color:#8be9fd;font-style:italic">$cat</span> <span style="color:#ff79c6">in</span> <span style="color:#8be9fd;font-style:italic">$Catalog</span>){
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">$catalogcount</span>++
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Checking the catalog $cat... &#34;</span> -NoNewline
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span>(<span style="color:#8be9fd;font-style:italic">Get-BrokerCatalog</span> -AdminAddress <span style="color:#8be9fd;font-style:italic">$DeliveryController</span> -Name <span style="color:#8be9fd;font-style:italic">$cat</span> -ErrorAction Ignore){
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;OK&#34;</span> -ForegroundColor Green
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Is it an MCS catalog? &#34;</span> -NoNewline
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span>((<span style="color:#8be9fd;font-style:italic">Get-BrokerCatalog</span> -AdminAddress <span style="color:#8be9fd;font-style:italic">$DeliveryController</span> -Name <span style="color:#8be9fd;font-style:italic">$cat</span>).ProvisioningType <span style="color:#ff79c6">-eq</span> <span style="color:#f1fa8c">&#34;MCS&#34;</span>){
+</span></span><span style="display:flex;"><span>            <span style="color:#8be9fd;font-style:italic">Write-host</span> <span style="color:#f1fa8c">&#34;Yes&#34;</span> -ForegroundColor Green
+</span></span><span style="display:flex;"><span>        } <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;No&#34;</span> -ForegroundColor Red
+</span></span><span style="display:flex;"><span>            <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;$cat is not an MCS catalog.&#34;</span> -ForegroundColor Red
+</span></span><span style="display:flex;"><span>            <span style="color:#8be9fd;font-style:italic">$errorcount</span>++
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    } <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Failed.&#34;</span> -ForegroundColor Red
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Cannot find catalog $cat.&#34;</span> -ForegroundColor Red
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">$errorcount</span>++
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#If one or more catalog(s) got an error, stop processing</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">if</span>(<span style="color:#8be9fd;font-style:italic">$errorcount</span> <span style="color:#ff79c6">-ne</span> 0){
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;One of the catalog does not exist or is not an MCS catalog. Please, check there is no mistype, the catalog(s) exist(s), or it is an MCS catalog before continuing.&#34;</span> -ForegroundColor Red
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Stop-Transcript</span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">break</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#Check if the VDICount can be split equally when -Split is set</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">if</span>(<span style="color:#8be9fd;font-style:italic">$Split</span>){
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">$continue</span> = <span style="color:#f1fa8c">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Checking VDICount can be split equally between the catalogs... &#34;</span> -NoNewline
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span>(<span style="color:#8be9fd;font-style:italic">$VDICount</span>%<span style="color:#8be9fd;font-style:italic">$catalogcount</span>){
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;No&#34;</span> -ForegroundColor Yellow
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">while</span> (<span style="color:#8be9fd;font-style:italic">$continue</span> <span style="color:#ff79c6">-notlike</span> <span style="color:#f1fa8c">&#34;y&#34;</span> <span style="color:#ff79c6">-and</span> <span style="color:#8be9fd;font-style:italic">$continue</span> <span style="color:#ff79c6">-notlike</span> <span style="color:#f1fa8c">&#34;n&#34;</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#8be9fd;font-style:italic">$continue</span> = <span style="color:#8be9fd;font-style:italic">Read-Host</span> <span style="color:#f1fa8c">&#34;VDICount cannot be split equally between the catalogs. Do you want to continue and split unevenly between the catalogs? Y/N&#34;</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span>(<span style="color:#8be9fd;font-style:italic">$continue</span> <span style="color:#ff79c6">-match</span> <span style="color:#f1fa8c">&#34;y&#34;</span>){
+</span></span><span style="display:flex;"><span>            <span style="color:#8be9fd;font-style:italic">$VDICount</span> = [math]::Floor(<span style="color:#8be9fd;font-style:italic">$VDICount</span>/<span style="color:#8be9fd;font-style:italic">$catalogcount</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Based on the parameter and the number of catalogs, $VDICount VM(s) will be created in each catalog.&#34;</span> -ForegroundColor Yellow
+</span></span><span style="display:flex;"><span>            <span style="color:#8be9fd;font-style:italic">$continue</span> = <span style="color:#f1fa8c">&#34;&#34;</span> <span style="color:#6272a4">#reset continue for next question</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">while</span> (<span style="color:#8be9fd;font-style:italic">$continue</span> <span style="color:#ff79c6">-notlike</span> <span style="color:#f1fa8c">&#34;y&#34;</span> <span style="color:#ff79c6">-and</span> <span style="color:#8be9fd;font-style:italic">$continue</span> <span style="color:#ff79c6">-notlike</span> <span style="color:#f1fa8c">&#34;n&#34;</span>) {
+</span></span><span style="display:flex;"><span>                <span style="color:#8be9fd;font-style:italic">$continue</span> = <span style="color:#8be9fd;font-style:italic">Read-Host</span> <span style="color:#f1fa8c">&#34;Do you want to continue? Y/N&#34;</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">if</span>(<span style="color:#8be9fd;font-style:italic">$continue</span> <span style="color:#ff79c6">-notmatch</span> <span style="color:#f1fa8c">&#34;y&#34;</span>){
+</span></span><span style="display:flex;"><span>                <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Execution ended by the user.&#34;</span> -ForegroundColor Yellow
+</span></span><span style="display:flex;"><span>                <span style="color:#8be9fd;font-style:italic">Stop-Transcript</span> 
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">break</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        } <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Execution ended by the user.&#34;</span> -ForegroundColor Yellow
+</span></span><span style="display:flex;"><span>            <span style="color:#8be9fd;font-style:italic">Stop-Transcript</span> 
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">break</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    } <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;OK&#34;</span> -ForegroundColor Green
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#Check if the Delivery Group exists</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Checking the Delivery Group $DeliveryGroup...&#34;</span> -NoNewline
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">if</span>(<span style="color:#8be9fd;font-style:italic">Get-BrokerDesktopGroup</span> -AdminAddress <span style="color:#8be9fd;font-style:italic">$DeliveryController</span> -Name <span style="color:#8be9fd;font-style:italic">$DeliveryGroup</span> -ErrorAction Ignore){
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;OK&#34;</span> -ForegroundColor Green
+</span></span><span style="display:flex;"><span>} <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Failed.&#34;</span> -ForegroundColor Red
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Cannot find Delivery Group $DeliveryGroup.&#34;</span> -ForegroundColor Red
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Stop-Transcript</span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">break</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;All the parameters were validated. Continue processing...&#34;</span> -ForegroundColor Green
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#reset some variables</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">$errorcount</span> = 0
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">$count</span> = 0
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">################################################################################################</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#Let the fun begin</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">################################################################################################</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">foreach</span>(<span style="color:#8be9fd;font-style:italic">$cat</span> <span style="color:#ff79c6">in</span> <span style="color:#8be9fd;font-style:italic">$Catalog</span>){
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Starting provisionning of $VDICount VM(s) in $cat&#34;</span> -ForegroundColor Yellow
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">#Find IdentityPool for naming convention, OU settings of the Catalog</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Getting IdentityPool... &#34;</span> -NoNewline
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">$IdentityPool</span> = (<span style="color:#8be9fd;font-style:italic">Get-AcctIdentityPool</span> -IdentityPoolName <span style="color:#8be9fd;font-style:italic">$cat</span>).IdentityPoolUid.Guid
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;$IdentityPool found&#34;</span> -ForegroundColor Green
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">#Creating the account in AD and in the IndentityPool</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Creating account(s)... &#34;</span> -NoNewline
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">$adAccounts</span> = <span style="color:#8be9fd;font-style:italic">New-AcctADAccount</span> -Count <span style="color:#8be9fd;font-style:italic">$VDICount</span> -IdentityPoolUid <span style="color:#8be9fd;font-style:italic">$IdentityPool</span> -ErrorAction Stop
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;OK&#34;</span> -ForegroundColor Green
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">#Creating the VM(s) using the name(s) list from the previous command</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Creating the virtual machine(s)... &#34;</span> -NoNewline
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">$provTaskId</span> = <span style="color:#8be9fd;font-style:italic">New-ProvVM</span> -AdAccountName @(<span style="color:#8be9fd;font-style:italic">$adAccounts</span>.SuccessfulAccounts) -ProvisioningSchemeName <span style="color:#8be9fd;font-style:italic">$cat</span> -RunAsynchronously -ErrorAction Stop
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">#Display a progress bar in case of large number of VMs creation</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">$provtask</span> = <span style="color:#8be9fd;font-style:italic">Get-ProvTask</span> -TaskId <span style="color:#8be9fd;font-style:italic">$provTaskId</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">$totalpercent</span> = 0
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">While</span>(<span style="color:#8be9fd;font-style:italic">$provtask</span>.Active <span style="color:#ff79c6">-eq</span> <span style="color:#8be9fd;font-style:italic">$true</span>){
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">try</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#8be9fd;font-style:italic">$totalpercent</span> = <span style="color:#ff79c6">If</span> (<span style="color:#8be9fd;font-style:italic">$provTask</span>.TaskProgress) {<span style="color:#8be9fd;font-style:italic">$provTask</span>.TaskProgress} <span style="color:#ff79c6">else</span> {0}
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">catch</span> {
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Progress</span> -Activity <span style="color:#f1fa8c">&#34;Tracking progress&#34;</span> -status  <span style="color:#f1fa8c">&#34;$totalPercent% Complete:&#34;</span> -percentComplete <span style="color:#8be9fd;font-style:italic">$totalpercent</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Start-Sleep</span> 3
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">$provtask</span> = <span style="color:#8be9fd;font-style:italic">Get-ProvTask</span> -TaskId <span style="color:#8be9fd;font-style:italic">$provTaskId</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;OK&#34;</span> -ForegroundColor Green
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">#Get the ProvisioningSchemeUid in ordre to add the VM(s) to the catalog</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Getting Provisioning Scheme Uid... &#34;</span> -NoNewline
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">$ProvSchemeUid</span> = (<span style="color:#8be9fd;font-style:italic">Get-ProvScheme</span> -ProvisioningSchemeName <span style="color:#8be9fd;font-style:italic">$cat</span>).ProvisioningSchemeUid.Guid
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;$ProvSchemeUid found&#34;</span> -ForeGroundColor Green
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">#Finding the catalog Ui to attached the VM(s) to</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Finding Catalog&#39;s UId... &#34;</span> -NoNewline
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">$Uid</span> = (<span style="color:#8be9fd;font-style:italic">Get-BrokerCatalog</span> -Name <span style="color:#8be9fd;font-style:italic">$cat</span>).Uid
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;$Uid found&#34;</span> -ForegroundColor Green
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">#Listing the newly created VM(s) in order to add to the catalog. &#34;Brokered&#34; tag means the VM is created but not attached</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">#We are listing those</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">$ProvVMS</span> = <span style="color:#8be9fd;font-style:italic">Get-ProvVM</span> -ProvisioningSchemeUid <span style="color:#8be9fd;font-style:italic">$ProvSchemeUid</span> -MaxRecordCount 10000 | <span style="color:#8be9fd;font-style:italic">Where-Object</span> {<span style="color:#8be9fd;font-style:italic">$_</span>.Tag <span style="color:#ff79c6">-ne</span> <span style="color:#f1fa8c">&#34;Brokered&#34;</span>}
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Assigning newly created machines to $cat...&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Start-Sleep</span> -Seconds 10 <span style="color:#6272a4">#Adding delay to avoid an error if the Delivery Controller has not up-to-date info (could require a few seconds sometime)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">Foreach</span>(<span style="color:#8be9fd;font-style:italic">$VM</span> <span style="color:#ff79c6">in</span> <span style="color:#8be9fd;font-style:italic">$ProvVMS</span>){
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">$count</span>++
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">$VMName</span> = <span style="color:#8be9fd;font-style:italic">$VM</span>.VMName
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4">#Lock the VM to indicate the VM is used (assigned to a catalog)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Locking VM $VMName... &#34;</span> -NoNewline
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Lock-ProvVM</span> -ProvisioningSchemeName <span style="color:#8be9fd;font-style:italic">$cat</span> -Tag <span style="color:#f1fa8c">&#34;Brokered&#34;</span> -VMID @(<span style="color:#8be9fd;font-style:italic">$VM</span>.VMId) -ErrorAction Stop
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;OK&#34;</span> -ForegroundColor Green
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4">#Adding the VM to the catalog</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Adding VM $VMName to $cat catalog... &#34;</span> -NoNewline
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">New-BrokerMachine</span> -Cataloguid <span style="color:#8be9fd;font-style:italic">$Uid</span> -MachineName <span style="color:#8be9fd;font-style:italic">$VMName</span> -ErrorAction Stop | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;OK&#34;</span> -ForegroundColor Green
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4">#Adding the VM to the Delivery Group</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Adding VM $VMName to $DeliveryGroup delivery group... &#34;</span> -NoNewline
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Add-BrokerMachine</span> -MachineName <span style="color:#f1fa8c">&#34;$env:USERDOMAIN\$VMName&#34;</span> -DesktopGroup <span style="color:#8be9fd;font-style:italic">$DeliveryGroup</span> -ErrorAction Stop 
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-host</span> <span style="color:#f1fa8c">&#34;OK&#34;</span> -ForegroundColor Green
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;$count VDI created in $cat and attached to $DeliveryGroup!&#34;</span> -ForegroundColor Green
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">#Reset variables before next loop, just in case</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">$adAccounts</span> = <span style="color:#8be9fd;font-style:italic">$null</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">$ProvVMS</span> = <span style="color:#8be9fd;font-style:italic">$null</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">$count</span> = <span style="color:#8be9fd;font-style:italic">$null</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#Stop logging</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">Stop-Transcript</span> 
+</span></span></code></pre></div>
+
+                
+
+                <hr>
+                <ul class="pager">
+                    
+                    
+                    <li class="next">
+                        <a href="/james-rankins-first-autologon-automated/" data-toggle="tooltip" data-placement="top" title="James Rankin&#39;s first autologon automated">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+                
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">Table of content</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/citrix" title="citrix">
+                            citrix
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/powershell" title="powershell">
+                            powershell
+                        </a>
+                        
+                        
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+                <section>
+                    <hr>
+                    <h5>FRIENDS</h5>
+                    <ul class="list-inline">
+                        
+                        <li><a target="_blank" href="https://davidsalvatore.tech/">David Salvatore</a></li>
+                        
+                    </ul>
+                </section>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                   
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="Steven Lemonier" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+                   
+                    
+                    <li>
+                        <a href="mailto:mail@stevenlemonier.fr">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+
+                    
+                    <li>
+                        <a href="https://twitter.com/StevenLemonier/">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    
+
+                    
+
+		    
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/SLemonier">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+                    
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/stevenlemonier/">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+                </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; Steven Lemonier 2022
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'G-NVXSGY4D2B', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+</body>
+</html>

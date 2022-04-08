@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Steven Lemonier">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="https://stevenlemonier.fr/img/title_powershell.jpg">
+    <meta property="twitter:image" content="https://stevenlemonier.fr/img/title_powershell.jpg" />
+    
+
+    
+    <meta name="title" content="James Rankin&#39;s first autologon automated" />
+    <meta property="og:title" content="James Rankin&#39;s first autologon automated" />
+    <meta property="twitter:title" content="James Rankin&#39;s first autologon automated" />
+    
+
+    
+    <meta name="description" content="James Rankin&#39;s first autologon automated">
+    <meta property="og:description" content="James Rankin&#39;s first autologon automated" />
+    <meta property="twitter:description" content="James Rankin&#39;s first autologon automated" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="Steven, Lemonier, Citrix, PowerShell, automation, CTA">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>James Rankin&#39;s first autologon automated-Steven Lemonier</title>
+
+    <link rel="canonical" href="/james-rankins-first-autologon-automated/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link href="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@5.15.1/css/all.css" rel="stylesheet" type="text/css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Steven Lemonier</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                    
+		    
+                        <li><a href="/top/archive/">ARCHIVE</a></li>
+                    
+                        <li><a href="/top/about/">ABOUT</a></li>
+                    
+
+                    
+		    <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/title_powershell.jpg');
+        box-shadow: inset 0px 0px 300px 200px rgba(0,0,0,0.6);
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/windows" title="Windows">
+                            Windows
+                        </a>
+                        
+                        <a class="tag" href="/tags/powershell" title="PowerShell">
+                            PowerShell
+                        </a>
+                        
+                        <a class="tag" href="/tags/autologon" title="Autologon">
+                            Autologon
+                        </a>
+                        
+                        <a class="tag" href="/tags/automated" title="Automated">
+                            Automated
+                        </a>
+                        
+                    </div>
+                    <h1>James Rankin&#39;s first autologon automated</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                 Steven
+                             
+                            on 
+                            Wednesday, December 2, 2020
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <p>Last month, well-known Citrix Expert James Rankin released the <a href="https://james-rankin.com/articles/the-ultimate-guide-to-windows-logon-optimizations-part-3/">part 3 of his new series about Windows logon time optimizations</a>. We are all aware of logon duration and how much it can be a pain to deal with in our environments, especially since Microsoft added more and more features to its operating system.</p>
+<p>New versions continue to increase user logon duration and can raise up to one minute before letting users do their work. One minute does not sound like a big deal. But depending on the context, it can be a hell of a difference (think about hospitals). Thus, any improvement we can make on this part is helpful and must be implemented.</p>
+<p>Even if our current logon times are acceptable, it is our duty, as experts, to deliver the best experiences and performances we can offer. Companies don&rsquo;t pay us for clicking &ldquo;next, next, next&rdquo; on an installer. They pay us for all the knowledge we have and can leverage on.</p>
+<p>So, when James Rankin shared about how to automatize the first logon after pointing out later ones are always faster in his article, I wondered if I can go a bit further in the automation of this. He does it through a couple of GPO, I personally am a &ldquo;put-everything-you-can-in-your-Golden-Image&rdquo; guy. I don&rsquo;t have any argument here to justify one approach over the other. I was trained this way, to keep the GPO as minimal as possible. But share your thoughts on this one if you feel your way is better.</p>
+<p>In the upcoming months, I am projecting to automatize the creation of my Golden Image on a regular basis, thanks to Packer and Ansible, and this first automated logon should be part of it.</p>
+<p>And there is always something new to learn.</p>
+<p>Take the first part of James Rankin&rsquo;s implementation : a shutdown script.</p>
+<p>How would you proceed without GPO ? First, I tried with a scheduled task. There is no trigger for the shutdown of a computer. Then, I thought about capturing the event 6006. It did not work. I ended up on an article about implementing the equivalent of local gpedit.msc shutdown script through the registry. It is not the cleanest way to do so, in my opinion, but it does the job. If you have any idea how to improve this part, please share it, I&rsquo;ll be glad to add your contribution.</p>
+<p>The remaining parts were straight forward actually: set an autologon script for the autologon user to autologoff (high-five if you understood this at first read ✋).</p>
+<p>Of course, I added some verification, like checking <a href="https://docs.microsoft.com/en-us/sysinternals/downloads/autologon">Sysinternal tool Autologon</a> is available on the system.</p>
+<p>You will probably wonder by seeing the script why I don&rsquo;t Convert-ToSecureString the password parameter or require to have it secured prior to the script&rsquo;s execution. Well, I am not entirely sure how it would handle this part with Packer or Ansible. So, I preferred to keep it simple but have in mind the autologon account will have its password stored in clear text in SetAutologon.bat.</p>
+<p>Maybe I could set some ACLs on this file in a V2. 🤔</p>
+<p>The script is pretty easy to call:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-PowerShell" data-lang="PowerShell"><span style="display:flex;"><span>.\SetAutologon.ps1 -Account leogetz -Password <span style="color:#8be9fd;font-style:italic">okay-okay</span>-okay!
+</span></span></code></pre></div><p>SetAutologon.ps1 -Account leogetz -Password okay-okay-okay!
+As usual, I added some parameters to set the path where to store the scripts (default is C:\Script) and the output file for the log (default is the current directory).</p>
+<p>Okay ! You&rsquo;ll find the <a href="https://github.com/SLemonier/CitrixAutomation/blob/main/SetAutologon.ps1">latest version on Github</a>, feel free to share your comments, your improvement&rsquo;s ideas or custom it your way!</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-PowerShell" data-lang="PowerShell"><span style="display:flex;"><span><span style="color:#6272a4">&lt;#
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> </span><span style="color:#f1fa8c">.Synopsis</span><span style="color:#6272a4">
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> Configure local machine for autologon as described in James Rankin&#39;s article (https://james-rankin.com/articles/the-ultimate-guide-to-windows-logon-optimizations-part-3/).
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> </span><span style="color:#f1fa8c">.Description</span><span style="color:#6272a4">
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> Configure local machine autologon with given account (no need to specify the domain) and password.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> Configure logon script for the given account to logoff automatically.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> </span><span style="color:#f1fa8c">.Parameter</span><span style="color:#6272a4"> Account
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> Specifiy the account to use for autologon.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> This parameter is mandatory, ensure the account already exists in the domain.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> </span><span style="color:#f1fa8c">.Parameter</span><span style="color:#6272a4"> Password
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> Specifiy the account&#39;s password to use for autologon.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> This parameter is mandatory, ensure the password is correct.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> </span><span style="color:#f1fa8c">.Parameter</span><span style="color:#6272a4"> Path
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> Specify the folder where to store batches created by the script.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> This parameter is optionnal, by default, it will store in C:\Scripts.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> </span><span style="color:#f1fa8c">.Parameter</span><span style="color:#6272a4"> Log
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> Specifiy the output file for the logs.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> This parameter is optionnal, by default, it will create a file in the current directory.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> </span><span style="color:#f1fa8c">.Example</span><span style="color:#6272a4">
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> # Configure local machine to autolog the user leogetz with the password P@ssw0rd
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> SetAutologon.ps1 -Account leogetz -Password P@ssw0rd
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> </span><span style="color:#f1fa8c">.Example</span><span style="color:#6272a4">
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> # Configure local machine to autolog the user leogetz with the password P@ssw0rd and store the scripts in C:\Tmp
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> SetAutologon.ps1 -Account leogetz -Password P@ssw0rd -Path C:\Tmp
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> </span><span style="color:#f1fa8c">.Example</span><span style="color:#6272a4">
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> # Configure local machine to autolog the user leogetz with the password P@ssw0rd and store the scripts in C:\Tmp
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">  and log the output in C:\Temp
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"> SetAutologon.ps1 -Account leogetz -Password P@ssw0rd -Path C:\Tmp -Log &#34;C:\temp\test.log&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">#&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>[<span style="color:#ff79c6">CmdletBinding</span>()]
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">Param</span>(
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># Declaring input variables for the script</span>
+</span></span><span style="display:flex;"><span>    [<span style="color:#ff79c6">Parameter</span>(<span style="color:#ff79c6">Mandatory</span>=<span style="color:#8be9fd;font-style:italic">$true</span>)] [string]<span style="color:#8be9fd;font-style:italic">$Account</span>,
+</span></span><span style="display:flex;"><span>    [<span style="color:#ff79c6">Parameter</span>(<span style="color:#ff79c6">Mandatory</span>=<span style="color:#8be9fd;font-style:italic">$true</span>)] [string]<span style="color:#8be9fd;font-style:italic">$Password</span>,
+</span></span><span style="display:flex;"><span>    [<span style="color:#ff79c6">Parameter</span>(<span style="color:#ff79c6">Mandatory</span>=<span style="color:#8be9fd;font-style:italic">$false</span>)] [string]<span style="color:#8be9fd;font-style:italic">$Path</span>=<span style="color:#f1fa8c">&#34;C:\Scripts&#34;</span>,
+</span></span><span style="display:flex;"><span>    [<span style="color:#ff79c6">Parameter</span>(<span style="color:#ff79c6">Mandatory</span>=<span style="color:#8be9fd;font-style:italic">$false</span>)][ValidateNotNullOrEmpty()] [string]<span style="color:#8be9fd;font-style:italic">$LogFile</span>=<span style="color:#f1fa8c">&#34;.\SetAutologon.log&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#Start logging</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">Start-Transcript</span> -Path <span style="color:#8be9fd;font-style:italic">$LogFile</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#Setting variables prior to their usage is not mandatory</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">Set-StrictMode</span> -Version 2
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">################################################################################################</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#Checking the parameters</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">################################################################################################</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Checking Path...&#34;</span> -NoNewline
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">if</span>(<span style="color:#8be9fd;font-style:italic">Test-Path</span> -Path <span style="color:#8be9fd;font-style:italic">$Path</span>){
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;OK&#34;</span> -ForegroundColor Green
+</span></span><span style="display:flex;"><span>} <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">New-Item</span> -ItemType Directory -Path <span style="color:#8be9fd;font-style:italic">$Path</span> | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;OK&#34;</span> -ForegroundColor Green
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">################################################################################################</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#Checking the pre-requisites</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">################################################################################################</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Checking Sysinternal tool Autologon... &#34;</span> -NoNewline
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">try</span> {
+</span></span><span style="display:flex;"><span>    autologon64 <span style="color:#8be9fd;font-style:italic">$Account</span> <span style="color:#8be9fd;font-style:italic">$env:USERDOMAIN</span> <span style="color:#8be9fd;font-style:italic">$Password</span> /accepteula
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;OK&#34;</span> -ForegroundColor Green
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">catch</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Failed&#34;</span> -ForegroundColor Red
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Sysinternal tool Autologon is not available. Please download from https://docs.microsoft.com/en-us/sysinternals/downloads/autologon and unzip Autologon64.exe in default system Path (for instance &#34;&#34;C:\windows\system32\&#34;&#34;)&#34;</span> -ForegroundColor Red
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Stop-Transcript</span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">break</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">################################################################################################</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#Creating Autologon</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">################################################################################################</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Creating Autologon batch... &#34;</span> -NoNewline
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">if</span>(!(<span style="color:#8be9fd;font-style:italic">Test-Path</span> -Path C:\Windows\System32\GroupPolicy\Machine\SetAutologon.bat)){
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">try</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Adding autologon64 $Account $env:USERDOMAIN $Password /accepteula to C:\Windows\System32\GroupPolicy\Machine\SetAutologon.bat... &#34;</span> -NoNewline -ForegroundColor Yellow
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> ( <span style="color:#ff79c6">-Not</span> (<span style="color:#8be9fd;font-style:italic">Test-Path</span> <span style="color:#f1fa8c">&#34;C:\Windows\System32\GroupPolicy\Machine&#34;</span>)){
+</span></span><span style="display:flex;"><span>            <span style="color:#8be9fd;font-style:italic">New-Item</span> -Path <span style="color:#f1fa8c">&#34;C:\Windows\System32\GroupPolicy\Machine&#34;</span> -ItemType Directory | <span style="color:#8be9fd;font-style:italic">out-null</span>
+</span></span><span style="display:flex;"><span>        }  
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">New-Item</span> -Path C:\Windows\System32\GroupPolicy\Machine\ -Name SetAutologon.bat -ItemType File | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-Content</span> -Path C:\Windows\System32\GroupPolicy\Machine\SetAutologon.bat  <span style="color:#f1fa8c">&#34;autologon64 $Account $env:USERDOMAIN $Password /accepteula&#34;</span> -Encoding ASCII
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;OK&#34;</span> -ForegroundColor Green
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">catch</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Failed&#34;</span> -ForegroundColor Red
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Stop-Transcript</span> 
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">break</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>} <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">try</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Remove-Item</span> -Path C:\Windows\System32\GroupPolicy\Machine\SetAutologon.bat -Force | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> ( <span style="color:#ff79c6">-Not</span> (<span style="color:#8be9fd;font-style:italic">Test-Path</span> <span style="color:#f1fa8c">&#34;C:\Windows\System32\GroupPolicy\Machine&#34;</span>)){
+</span></span><span style="display:flex;"><span>            <span style="color:#8be9fd;font-style:italic">New-Item</span> -Path <span style="color:#f1fa8c">&#34;C:\Windows\System32\GroupPolicy\Machine&#34;</span> -ItemType Directory | <span style="color:#8be9fd;font-style:italic">out-null</span>
+</span></span><span style="display:flex;"><span>        }  
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">New-Item</span> -Path C:\Windows\System32\GroupPolicy\Machine\ -Name SetAutologon.bat -ItemType File | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Adding autologon64 $Account $env:USERDOMAIN $Password /accepteula to C:\Windows\System32\GroupPolicy\Machine\SetAutologon.bat... &#34;</span> -NoNewline -ForegroundColor Yellow
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-Content</span> -Path C:\Windows\System32\GroupPolicy\Machine\SetAutologon.bat  <span style="color:#f1fa8c">&#34;autologon64 $Account $env:USERDOMAIN $Password /accepteula&#34;</span> -Encoding ASCII
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;OK&#34;</span> -ForegroundColor Green
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">catch</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Failed&#34;</span> -ForegroundColor Red
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Stop-Transcript</span> 
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">break</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Creating Autologon Scheduled task... &#34;</span> -NoNewline
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">if</span>(!(<span style="color:#8be9fd;font-style:italic">Get-ScheduledTask</span> | <span style="color:#8be9fd;font-style:italic">Where-Object</span>{<span style="color:#8be9fd;font-style:italic">$_</span>.TaskName <span style="color:#ff79c6">-match</span> <span style="color:#f1fa8c">&#34;SetAutologon&#34;</span>})){
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">try</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">New-Item</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\State\Machine\&#34;</span> -Name Scripts -Force | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">New-Item</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\State\Machine\Scripts\&#34;</span> -Name Shutdown -Force | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">New-Item</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\State\Machine\Scripts\Shutdown\&#34;</span> -Name 0 -Force | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-ItemProperty</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\State\Machine\Scripts\Shutdown\0&#34;</span> -Name <span style="color:#f1fa8c">&#34;GPO-ID&#34;</span> -Value <span style="color:#f1fa8c">&#34;LocalGPO&#34;</span> | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-ItemProperty</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\State\Machine\Scripts\Shutdown\0&#34;</span> -Name <span style="color:#f1fa8c">&#34;SOM-ID&#34;</span> -Value <span style="color:#f1fa8c">&#34;Local&#34;</span> | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-ItemProperty</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\State\Machine\Scripts\Shutdown\0&#34;</span> -Name <span style="color:#f1fa8c">&#34;FileSysPath&#34;</span> -Value <span style="color:#f1fa8c">&#34;C:\Windows\System32\GroupPolicy\Machine&#34;</span> | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-ItemProperty</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\State\Machine\Scripts\Shutdown\0&#34;</span> -Name <span style="color:#f1fa8c">&#34;DisplayName&#34;</span> -Value <span style="color:#f1fa8c">&#34;Local Group Policy&#34;</span> | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-ItemProperty</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\State\Machine\Scripts\Shutdown\0&#34;</span> -Name <span style="color:#f1fa8c">&#34;GPOName&#34;</span>  -Value <span style="color:#f1fa8c">&#34;Local Group Policy&#34;</span> | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">New-Item</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\State\Machine\Scripts\Shutdown\0\&#34;</span> -Name 0 -Force | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-ItemProperty</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\State\Machine\Scripts\Shutdown\0\0&#34;</span> -Name <span style="color:#f1fa8c">&#34;Script&#34;</span> -Value <span style="color:#f1fa8c">&#34;SetAutologon.bat&#34;</span> | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-ItemProperty</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\State\Machine\Scripts\Shutdown\0\0&#34;</span> -Name <span style="color:#f1fa8c">&#34;Parameters&#34;</span> -Value <span style="color:#f1fa8c">&#34;&#34;</span> | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-ItemProperty</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\State\Machine\Scripts\Shutdown\0\0&#34;</span> -Name <span style="color:#f1fa8c">&#34;ExecTime&#34;</span> -Value ([byte[]](0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00)) | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">New-Item</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\&#34;</span> -Name Scripts -Force | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">New-Item</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\Scripts\&#34;</span> -Name Shutdown -Force | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">New-Item</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\Scripts\Shutdown\&#34;</span> -Name 0 -Force | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-ItemProperty</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\Scripts\Shutdown\0&#34;</span> -Name <span style="color:#f1fa8c">&#34;GPO-ID&#34;</span> -Value <span style="color:#f1fa8c">&#34;LocalGPO&#34;</span> | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-ItemProperty</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\Scripts\Shutdown\0&#34;</span> -Name <span style="color:#f1fa8c">&#34;SOM-ID&#34;</span> -Value <span style="color:#f1fa8c">&#34;Local&#34;</span> | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-ItemProperty</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\Scripts\Shutdown\0&#34;</span> -Name <span style="color:#f1fa8c">&#34;FileSysPath&#34;</span> -Value <span style="color:#f1fa8c">&#34;C:\Windows\System32\GroupPolicy\Machine&#34;</span> | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-ItemProperty</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\Scripts\Shutdown\0&#34;</span> -Name <span style="color:#f1fa8c">&#34;DisplayName&#34;</span> -Value <span style="color:#f1fa8c">&#34;Local Group Policy&#34;</span> | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-ItemProperty</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\Scripts\Shutdown\0&#34;</span> -Name <span style="color:#f1fa8c">&#34;GPOName&#34;</span>  -Value <span style="color:#f1fa8c">&#34;Local Group Policy&#34;</span> | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">New-Item</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\Scripts\Shutdown\0\&#34;</span> -Name 0 -Force | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-ItemProperty</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\Scripts\Shutdown\0\0&#34;</span> -Name <span style="color:#f1fa8c">&#34;Script&#34;</span> -Value <span style="color:#f1fa8c">&#34;SetAutologon.bat&#34;</span> | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-ItemProperty</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\Scripts\Shutdown\0\0&#34;</span> -Name <span style="color:#f1fa8c">&#34;Parameters&#34;</span> -Value <span style="color:#f1fa8c">&#34;&#34;</span> | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-ItemProperty</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\Scripts\Shutdown\0\0&#34;</span> -Name <span style="color:#f1fa8c">&#34;IsPowershell&#34;</span> -Value 0 -Type dword | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-ItemProperty</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\Scripts\Shutdown\0\0&#34;</span> -Name <span style="color:#f1fa8c">&#34;ExecTime&#34;</span> -Value ([byte[]](0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00)) | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> ( <span style="color:#ff79c6">-Not</span> (<span style="color:#8be9fd;font-style:italic">Test-Path</span> <span style="color:#f1fa8c">&#34;C:\Windows\System32\GroupPolicy\Machine\Scripts\Startup&#34;</span>)){
+</span></span><span style="display:flex;"><span>            <span style="color:#8be9fd;font-style:italic">New-Item</span> -Path <span style="color:#f1fa8c">&#34;C:\Windows\System32\GroupPolicy\Machine\Scripts\Startup&#34;</span> -ItemType Directory | <span style="color:#8be9fd;font-style:italic">out-null</span>
+</span></span><span style="display:flex;"><span>        }   
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> ( <span style="color:#ff79c6">-Not</span> (<span style="color:#8be9fd;font-style:italic">Test-Path</span> <span style="color:#f1fa8c">&#34;C:\Windows\System32\GroupPolicy\User\Scripts\Startup&#34;</span>)){
+</span></span><span style="display:flex;"><span>            <span style="color:#8be9fd;font-style:italic">New-Item</span> -Path <span style="color:#f1fa8c">&#34;C:\Windows\System32\GroupPolicy\User\Scripts\Startup&#34;</span> -ItemType Directory | <span style="color:#8be9fd;font-style:italic">out-null</span>
+</span></span><span style="display:flex;"><span>        }   
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> ( <span style="color:#ff79c6">-Not</span> (<span style="color:#8be9fd;font-style:italic">Test-Path</span> <span style="color:#f1fa8c">&#34;C:\Windows\System32\GroupPolicy\Machine\Scripts\Shutdown&#34;</span>)){
+</span></span><span style="display:flex;"><span>            <span style="color:#8be9fd;font-style:italic">New-Item</span> -Path <span style="color:#f1fa8c">&#34;C:\Windows\System32\GroupPolicy\Machine\Scripts\Shutdown&#34;</span> -ItemType Directory | <span style="color:#8be9fd;font-style:italic">out-null</span>
+</span></span><span style="display:flex;"><span>        }   
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> ( <span style="color:#ff79c6">-Not</span> (<span style="color:#8be9fd;font-style:italic">Test-Path</span> <span style="color:#f1fa8c">&#34;C:\Windows\System32\GroupPolicy\User\Scripts\Shutdown&#34;</span>)){
+</span></span><span style="display:flex;"><span>            <span style="color:#8be9fd;font-style:italic">New-Item</span> -Path <span style="color:#f1fa8c">&#34;C:\Windows\System32\GroupPolicy\User\Scripts\Shutdown&#34;</span> -ItemType Directory | <span style="color:#8be9fd;font-style:italic">out-null</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;OK&#34;</span> -ForegroundColor Green
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">catch</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Failed&#34;</span> -ForegroundColor Red
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Stop-Transcript</span> 
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">break</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}<span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Task already exists&#34;</span> -ForegroundColor Yellow
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Replacing existing task... &#34;</span> -NoNewline
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">try</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">New-Item</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\State\Machine\&#34;</span> -Name Scripts -Force | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">New-Item</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\State\Machine\Scripts\&#34;</span> -Name Shutdown -Force | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">New-Item</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\State\Machine\Scripts\Shutdown\&#34;</span> -Name 0 -Force | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-ItemProperty</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\State\Machine\Scripts\Shutdown\0&#34;</span> -Name <span style="color:#f1fa8c">&#34;GPO-ID&#34;</span> -Value <span style="color:#f1fa8c">&#34;LocalGPO&#34;</span> | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-ItemProperty</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\State\Machine\Scripts\Shutdown\0&#34;</span> -Name <span style="color:#f1fa8c">&#34;SOM-ID&#34;</span> -Value <span style="color:#f1fa8c">&#34;Local&#34;</span> | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-ItemProperty</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\State\Machine\Scripts\Shutdown\0&#34;</span> -Name <span style="color:#f1fa8c">&#34;FileSysPath&#34;</span> -Value <span style="color:#f1fa8c">&#34;C:\\Windows\\System32\\GroupPolicy\\Machine&#34;</span> | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-ItemProperty</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\State\Machine\Scripts\Shutdown\0&#34;</span> -Name <span style="color:#f1fa8c">&#34;DisplayName&#34;</span> -Value <span style="color:#f1fa8c">&#34;Local Group Policy&#34;</span> | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-ItemProperty</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\State\Machine\Scripts\Shutdown\0&#34;</span> -Name <span style="color:#f1fa8c">&#34;GPOName&#34;</span>  -Value <span style="color:#f1fa8c">&#34;Local Group Policy&#34;</span> | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">New-Item</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\State\Machine\Scripts\Shutdown\0\&#34;</span> -Name 0 -Force | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-ItemProperty</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\State\Machine\Scripts\Shutdown\0\0&#34;</span> -Name <span style="color:#f1fa8c">&#34;Script&#34;</span> -Value <span style="color:#f1fa8c">&#34;SetAutologon.bat&#34;</span> | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-ItemProperty</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\State\Machine\Scripts\Shutdown\0\0&#34;</span> -Name <span style="color:#f1fa8c">&#34;Parameters&#34;</span> -Value <span style="color:#f1fa8c">&#34;&#34;</span> | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-ItemProperty</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\State\Machine\Scripts\Shutdown\0\0&#34;</span> -Name <span style="color:#f1fa8c">&#34;ExecTime&#34;</span> -Value ([byte[]](0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00)) | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">New-Item</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\&#34;</span> -Name Scripts -Force | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">New-Item</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\Scripts\&#34;</span> -Name Shutdown -Force | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">New-Item</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\Scripts\Shutdown\&#34;</span> -Name 0 -Force | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-ItemProperty</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\Scripts\Shutdown\0&#34;</span> -Name <span style="color:#f1fa8c">&#34;GPO-ID&#34;</span> -Value <span style="color:#f1fa8c">&#34;LocalGPO&#34;</span> | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-ItemProperty</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\Scripts\Shutdown\0&#34;</span> -Name <span style="color:#f1fa8c">&#34;SOM-ID&#34;</span> -Value <span style="color:#f1fa8c">&#34;Local&#34;</span> | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-ItemProperty</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\Scripts\Shutdown\0&#34;</span> -Name <span style="color:#f1fa8c">&#34;FileSysPath&#34;</span> -Value <span style="color:#f1fa8c">&#34;C:\\Windows\\System32\\GroupPolicy\\Machine&#34;</span> | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-ItemProperty</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\Scripts\Shutdown\0&#34;</span> -Name <span style="color:#f1fa8c">&#34;DisplayName&#34;</span> -Value <span style="color:#f1fa8c">&#34;Local Group Policy&#34;</span> | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-ItemProperty</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\Scripts\Shutdown\0&#34;</span> -Name <span style="color:#f1fa8c">&#34;GPOName&#34;</span>  -Value <span style="color:#f1fa8c">&#34;Local Group Policy&#34;</span> | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">New-Item</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\Scripts\Shutdown\0\&#34;</span> -Name 0 -Force | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-ItemProperty</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\Scripts\Shutdown\0\0&#34;</span> -Name <span style="color:#f1fa8c">&#34;Script&#34;</span> -Value <span style="color:#f1fa8c">&#34;SetAutologon.bat&#34;</span> | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-ItemProperty</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\Scripts\Shutdown\0\0&#34;</span> -Name <span style="color:#f1fa8c">&#34;Parameters&#34;</span> -Value <span style="color:#f1fa8c">&#34;&#34;</span> | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-ItemProperty</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\Scripts\Shutdown\0\0&#34;</span> -Name <span style="color:#f1fa8c">&#34;IsPowershell&#34;</span> -Value 0 -Type dword | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-ItemProperty</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\Scripts\Shutdown\0\0&#34;</span> -Name <span style="color:#f1fa8c">&#34;ExecTime&#34;</span> -Value ([byte[]](0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00)) | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> ( <span style="color:#ff79c6">-Not</span> (<span style="color:#8be9fd;font-style:italic">Test-Path</span> <span style="color:#f1fa8c">&#34;C:\Windows\System32\GroupPolicy\Machine\Scripts\Startup&#34;</span>)){
+</span></span><span style="display:flex;"><span>            <span style="color:#8be9fd;font-style:italic">New-Item</span> -Path <span style="color:#f1fa8c">&#34;C:\Windows\System32\GroupPolicy\Machine\Scripts\Startup&#34;</span> -ItemType Directory | <span style="color:#8be9fd;font-style:italic">out-null</span>
+</span></span><span style="display:flex;"><span>        }   
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> ( <span style="color:#ff79c6">-Not</span> (<span style="color:#8be9fd;font-style:italic">Test-Path</span> <span style="color:#f1fa8c">&#34;C:\Windows\System32\GroupPolicy\User\Scripts\Startup&#34;</span>)){
+</span></span><span style="display:flex;"><span>            <span style="color:#8be9fd;font-style:italic">New-Item</span> -Path <span style="color:#f1fa8c">&#34;C:\Windows\System32\GroupPolicy\User\Scripts\Startup&#34;</span> -ItemType Directory | <span style="color:#8be9fd;font-style:italic">out-null</span>
+</span></span><span style="display:flex;"><span>        }   
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> ( <span style="color:#ff79c6">-Not</span> (<span style="color:#8be9fd;font-style:italic">Test-Path</span> <span style="color:#f1fa8c">&#34;C:\Windows\System32\GroupPolicy\Machine\Scripts\Shutdown&#34;</span>)){
+</span></span><span style="display:flex;"><span>            <span style="color:#8be9fd;font-style:italic">New-Item</span> -Path <span style="color:#f1fa8c">&#34;C:\Windows\System32\GroupPolicy\Machine\Scripts\Shutdown&#34;</span> -ItemType Directory | <span style="color:#8be9fd;font-style:italic">out-null</span>
+</span></span><span style="display:flex;"><span>        }   
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> ( <span style="color:#ff79c6">-Not</span> (<span style="color:#8be9fd;font-style:italic">Test-Path</span> <span style="color:#f1fa8c">&#34;C:\Windows\System32\GroupPolicy\User\Scripts\Shutdown&#34;</span>)){
+</span></span><span style="display:flex;"><span>            <span style="color:#8be9fd;font-style:italic">New-Item</span> -Path <span style="color:#f1fa8c">&#34;C:\Windows\System32\GroupPolicy\User\Scripts\Shutdown&#34;</span> -ItemType Directory | <span style="color:#8be9fd;font-style:italic">out-null</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;OK&#34;</span> -ForegroundColor Green
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">catch</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Failed&#34;</span> -ForegroundColor Red
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Stop-Transcript</span> 
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">break</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">################################################################################################</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#Allowing Autologon user to amend registry key HKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">################################################################################################</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Allowing Autologon user to amend Autologon registry key... &#34;</span> -NoNewline
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">try</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">$acl</span> = <span style="color:#8be9fd;font-style:italic">Get-Acl</span> <span style="color:#f1fa8c">&#34;HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Winlogon&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">$rule</span> = <span style="color:#8be9fd;font-style:italic">New-Object</span> System.Security.AccessControl.RegistryAccessRule (<span style="color:#f1fa8c">&#34;$env:USERDOMAIN\$account&#34;</span>,<span style="color:#f1fa8c">&#34;FullControl&#34;</span>,<span style="color:#f1fa8c">&#34;ContainerInherit,ObjectInherit&#34;</span>,<span style="color:#f1fa8c">&#34;None&#34;</span>,<span style="color:#f1fa8c">&#34;Allow&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">$acl</span>.SetAccessRule(<span style="color:#8be9fd;font-style:italic">$rule</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">$acl</span> | <span style="color:#8be9fd;font-style:italic">Set-Acl</span> -Path <span style="color:#f1fa8c">&#34;HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Winlogon&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;OK&#34;</span> -ForegroundColor Green
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">catch</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Failed&#34;</span> -ForegroundColor Red
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Stop-Transcript</span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">break</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">################################################################################################</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#Creating Autologoff</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">################################################################################################</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Creating Autologoff batch... &#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">if</span>(!(<span style="color:#8be9fd;font-style:italic">Test-Path</span> -Path <span style="color:#8be9fd;font-style:italic">$Path</span>\SetAutologoff.bat)){
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">try</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">New-Item</span> -Path <span style="color:#8be9fd;font-style:italic">$Path</span> -Name SetAutologoff.bat -ItemType File | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-Content</span> -Path <span style="color:#8be9fd;font-style:italic">$Path</span>\SetAutologoff.bat  <span style="color:#f1fa8c">&#34;reg delete &#34;&#34;HKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon&#34;&#34; /v DefaultUserName /f&#34;</span> -Encoding ASCII
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Adding reg delete &#34;&#34;HKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon&#34;&#34; /v DefaultUserName /f to $Path\SetAutologoff.bat... &#34;</span> -ForegroundColor Yellow
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-Content</span> -Path <span style="color:#8be9fd;font-style:italic">$Path</span>\SetAutologoff.bat  <span style="color:#f1fa8c">&#34;reg add &#34;&#34;HKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon&#34;&#34; /v AutoAdminLogon /t REG_SZ /d 0 /f&#34;</span> -Encoding ASCII
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Adding reg add &#34;&#34;HKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon&#34;&#34; /v AutoAdminLogon /t REG_SZ /d 0 /f to $Path\SetAutologoff.bat... &#34;</span> -ForegroundColor Yellow
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-Content</span> -Path <span style="color:#8be9fd;font-style:italic">$Path</span>\SetAutologoff.bat  <span style="color:#f1fa8c">&#34;logoff&#34;</span> -Encoding ASCII
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Adding logoff to $Path\SetAutologoff.bat... &#34;</span> -ForegroundColor Yellow
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Creating Autologoff batch... &#34;</span> -NoNewline
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;OK&#34;</span> -ForegroundColor Green
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">catch</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Failed&#34;</span> -ForegroundColor Red
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Stop-Transcript</span> 
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">break</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>} <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">try</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Remove-Item</span> -Path <span style="color:#8be9fd;font-style:italic">$Path</span>\SetAutologoff.bat -Force | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">New-Item</span> -Path <span style="color:#8be9fd;font-style:italic">$Path</span> -Name SetAutologoff.bat -ItemType File | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-Content</span> -Path <span style="color:#8be9fd;font-style:italic">$Path</span>\SetAutologoff.bat  <span style="color:#f1fa8c">&#34;reg delete &#34;&#34;HKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon&#34;&#34; /v DefaultUserName /f&#34;</span> -Encoding ASCII
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Adding reg delete &#34;&#34;HKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon&#34;&#34; /v DefaultUserName /f to $Path\SetAutologoff.bat... &#34;</span> -ForegroundColor Yellow
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-Content</span> -Path <span style="color:#8be9fd;font-style:italic">$Path</span>\SetAutologoff.bat  <span style="color:#f1fa8c">&#34;reg add &#34;&#34;HKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon&#34;&#34; /v AutoAdminLogon /t REG_SZ /d 0 /f&#34;</span> -Encoding ASCII
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Adding reg add &#34;&#34;HKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon&#34;&#34; /v AutoAdminLogon /t REG_SZ /d 0 /f to $Path\SetAutologoff.bat... &#34;</span> -ForegroundColor Yellow
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Set-Content</span> -Path <span style="color:#8be9fd;font-style:italic">$Path</span>\SetAutologoff.bat  <span style="color:#f1fa8c">&#34;logoff&#34;</span> -Encoding ASCII
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Adding logoff to $Path\SetAutologoff.bat... &#34;</span> -ForegroundColor Yellow
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Creating Autologoff batch... &#34;</span> -NoNewline
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;OK&#34;</span> -ForegroundColor Green
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">catch</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Failed&#34;</span> -ForegroundColor Red
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Stop-Transcript</span> 
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">break</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Creating Autologoff Scheduled task... &#34;</span> -NoNewline
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">if</span>(!(<span style="color:#8be9fd;font-style:italic">Get-ScheduledTask</span> | <span style="color:#8be9fd;font-style:italic">Where-Object</span>{<span style="color:#8be9fd;font-style:italic">$_</span>.TaskName <span style="color:#ff79c6">-match</span> <span style="color:#f1fa8c">&#34;SetAutologoff&#34;</span>})){
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">try</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">$taskAction</span> = <span style="color:#8be9fd;font-style:italic">New-ScheduledTaskAction</span> -Execute <span style="color:#8be9fd;font-style:italic">$Path</span>\SetAutologoff.bat
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">$taskTrigger</span> = <span style="color:#8be9fd;font-style:italic">New-ScheduledTaskTrigger</span> -AtLogOn -User <span style="color:#f1fa8c">&#34;$env:USERDOMAIN\$account&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Register-ScheduledTask</span> -TaskName <span style="color:#f1fa8c">&#34;SetAutologoff&#34;</span> -Description <span style="color:#f1fa8c">&#34;Configure Autologff for $Account&#34;</span> -Action <span style="color:#8be9fd;font-style:italic">$taskAction</span> -Trigger <span style="color:#8be9fd;font-style:italic">$taskTrigger</span> -user <span style="color:#f1fa8c">&#34;$env:USERDOMAIN\$Account&#34;</span> | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;OK&#34;</span> -ForegroundColor Green
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">catch</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Failed&#34;</span> -ForegroundColor Red
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Stop-Transcript</span> 
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">break</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}<span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Task already exists&#34;</span> -ForegroundColor Yellow
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Replacing existing task... &#34;</span> -NoNewline
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">try</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Unregister-ScheduledTask</span> -TaskName <span style="color:#f1fa8c">&#34;SetAutologoff&#34;</span> -Confirm:<span style="color:#8be9fd;font-style:italic">$false</span> | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">$taskAction</span> = <span style="color:#8be9fd;font-style:italic">New-ScheduledTaskAction</span> -Execute <span style="color:#8be9fd;font-style:italic">$Path</span>\SetAutologoff.bat
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">$taskTrigger</span> = <span style="color:#8be9fd;font-style:italic">New-ScheduledTaskTrigger</span> -AtLogOn -User <span style="color:#f1fa8c">&#34;$env:USERDOMAIN\$account&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Register-ScheduledTask</span> -TaskName <span style="color:#f1fa8c">&#34;SetAutologoff&#34;</span> -Description <span style="color:#f1fa8c">&#34;Configure Autologff for $Account&#34;</span> -Action <span style="color:#8be9fd;font-style:italic">$taskAction</span> -Trigger <span style="color:#8be9fd;font-style:italic">$taskTrigger</span> -user <span style="color:#f1fa8c">&#34;$env:USERDOMAIN\$Account&#34;</span> | <span style="color:#8be9fd;font-style:italic">Out-Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;OK&#34;</span> -ForegroundColor Green
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">catch</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Write-Host</span> <span style="color:#f1fa8c">&#34;Failed&#34;</span> -ForegroundColor Red
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">Stop-Transcript</span> 
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">break</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#Stop logging</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">Stop-Transcript</span>
+</span></span></code></pre></div>
+
+                
+
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/provision-new-vms-in-an-mcs-catalog-with-powershell/" data-toggle="tooltip" data-placement="top" title="Provision new VMs in an MCS catalog with Powershell">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/how-to-create-an-mcs-catalog-in-powershell/" data-toggle="tooltip" data-placement="top" title="How to create an (MCS) catalog in PowerShell">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+                
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">Table of content</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/citrix" title="citrix">
+                            citrix
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/powershell" title="powershell">
+                            powershell
+                        </a>
+                        
+                        
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+                <section>
+                    <hr>
+                    <h5>FRIENDS</h5>
+                    <ul class="list-inline">
+                        
+                        <li><a target="_blank" href="https://davidsalvatore.tech/">David Salvatore</a></li>
+                        
+                    </ul>
+                </section>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                   
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="Steven Lemonier" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+                   
+                    
+                    <li>
+                        <a href="mailto:mail@stevenlemonier.fr">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+
+                    
+                    <li>
+                        <a href="https://twitter.com/StevenLemonier/">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    
+
+                    
+
+		    
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/SLemonier">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+                    
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/stevenlemonier/">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+                </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; Steven Lemonier 2022
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'G-NVXSGY4D2B', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+</body>
+</html>
