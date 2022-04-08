@@ -1,0 +1,23 @@
+[10:53:10.932][tid:00000ee4.00000ee8][INFO]           ===== Begin Session: Volume re-attach
+[10:53:10.932][tid:00000ee4.00000ee8][INFO]            Session configuration read (DWORD): SOFTWARE\FSLogix\Profiles\Sessions\S-1-5-21-2433326362-2971583358-1492716030-1109\LogonStage = '5'(Logon_Complete)
+[10:53:10.932][tid:00000ee4.00000ee8][INFO]            Attempting re-attach of volume: \\?\Volume{de599a7c-356f-4293-acfb-18e8da96d612}\ for SID: S-1-5-21-2433326362-2971583358-1492716030-1109
+[10:53:10.932][tid:00000ee4.00000ee8][INFO]            Configuration setting not found: SOFTWARE\FSLogix\Profiles\LogonSyncMutexTimeout.  Using default: 60000
+[10:53:10.932][tid:00000ee4.00000ee8][INFO]            Acquired reattach virtual disk lock for user marlene.sasseur (SID=S-1-5-21-2433326362-2971583358-1492716030-1109) (Elapsed time: 0)
+[10:53:10.932][tid:00000ee4.00000ee8][WARN: 00000002]  Error querying VHDReAttachFilePath (The system cannot find the file specified.)
+[10:53:10.932][tid:00000ee4.00000ee8][INFO]            VHDPath: \\FS01.homelab.local\Profiles\S-1-5-21-2433326362-2971583358-1492716030-1109_marlene.sasseur\marlene.sasseur.VHDX
+[10:53:10.932][tid:00000ee4.00000ee8][INFO]            Username: marlene.sasseur
+[10:53:10.932][tid:00000ee4.00000ee8][INFO]            Attempting re-attach as the user
+[10:53:10.932][tid:00000ee4.00000ee8][INFO]            Retry Count: 60  Retry Interval (seconds): 10
+[10:53:10.979][tid:00000ee4.00000ee8][INFO]            Successfully opened VHD file
+[10:53:11.120][tid:00000ee4.00000ee8][INFO]            VHD(x) GetVirtualDiskPhysicalPath request returning after 0 milliseconds
+[10:53:11.120][tid:00000ee4.00000ee8][INFO]            VHD(x) FindFirstVolume request returning after 0 milliseconds
+[10:53:12.030][tid:00000ee4.00000ee8][INFO]            VHD(x) loop through volumes returning after 907 milliseconds, volumes tested: 4
+[10:53:12.030][tid:00000ee4.00000ee8][INFO]            VHD(x) getVolumeGUIDFromPhysicalPath request returning after 907 milliseconds
+[10:53:12.030][tid:00000ee4.00000ee8][INFO]            VHD(x) volume online request returning after 0 milliseconds
+[10:53:12.030][tid:00000ee4.00000ee8][INFO]            VHD(x) waitForVolumeMount request returning after 1016 milliseconds
+[10:53:12.030][tid:00000ee4.00000ee8][INFO]            Volume successfully re-attached for \\FS01.homelab.local\Profiles\S-1-5-21-2433326362-2971583358-1492716030-1109_marlene.sasseur\marlene.sasseur.VHDX
+[10:53:12.077][tid:00000ee4.00000ee8][INFO]            Session configuration read (DWORD): SOFTWARE\FSLogix\Profiles\Sessions\S-1-5-21-2433326362-2971583358-1492716030-500\LogonStage = '5'(Logon_Complete)
+[10:53:12.077][tid:00000ee4.00000ee8][INFO]           ===== End Session: Volume re-attach
+[10:53:12.077][tid:00000ee4.00000ee8][INFO]           Volume attach event
+[10:53:12.109][tid:00000ee4.00000ee8][INFO]           Configuration setting not found: SOFTWARE\FSLogix\Profiles\ReAttachRetryCount.  Using default: 60
+[10:53:12.109][tid:00000ee4.00000ee8][INFO]           Configuration setting not found: SOFTWARE\FSLogix\Profiles\ReAttachIntervalSeconds.  Using default: 10

@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Steven Lemonier">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="https://stevenlemonier.fr/img/title_adc.jpg">
+    <meta property="twitter:image" content="https://stevenlemonier.fr/img/title_adc.jpg" />
+    
+
+    
+    <meta name="title" content="Use monitors to leverage your GSLB setup" />
+    <meta property="og:title" content="Use monitors to leverage your GSLB setup" />
+    <meta property="twitter:title" content="Use monitors to leverage your GSLB setup" />
+    
+
+    
+    <meta name="description" content="add monitors to the GSLB setup to route efficiently the users where we want and prevent them to connect to a faulty gateway.">
+    <meta property="og:description" content="add monitors to the GSLB setup to route efficiently the users where we want and prevent them to connect to a faulty gateway." />
+    <meta property="twitter:description" content="add monitors to the GSLB setup to route efficiently the users where we want and prevent them to connect to a faulty gateway." />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="Steven, Lemonier, Citrix, PowerShell, automation, CTA">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>Use monitors to leverage your GSLB setup-Steven Lemonier</title>
+
+    <link rel="canonical" href="/use-monitors-to-leverage-your-gslb-setup/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link href="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@5.15.1/css/all.css" rel="stylesheet" type="text/css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Steven Lemonier</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                    
+		    
+                        <li><a href="/top/archive/">ARCHIVE</a></li>
+                    
+                        <li><a href="/top/about/">ABOUT</a></li>
+                    
+
+                    
+		    <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/title_adc.jpg');
+        box-shadow: inset 0px 0px 300px 200px rgba(0,0,0,0.6);
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/citrix" title="Citrix">
+                            Citrix
+                        </a>
+                        
+                        <a class="tag" href="/tags/adc" title="ADC">
+                            ADC
+                        </a>
+                        
+                        <a class="tag" href="/tags/gateway" title="Gateway">
+                            Gateway
+                        </a>
+                        
+                        <a class="tag" href="/tags/gslb" title="GSLB">
+                            GSLB
+                        </a>
+                        
+                        <a class="tag" href="/tags/improvement" title="Improvement">
+                            Improvement
+                        </a>
+                        
+                        <a class="tag" href="/tags/how-to" title="How to">
+                            How to
+                        </a>
+                        
+                        <a class="tag" href="/tags/monitors" title="Monitors">
+                            Monitors
+                        </a>
+                        
+                    </div>
+                    <h1>Use monitors to leverage your GSLB setup</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                 Steven
+                             
+                            on 
+                            Wednesday, April 28, 2021
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <p>If you&rsquo;re not familiar with Citrix ADC&rsquo;s GSLB feature, let me summarize in a few words how this works and might help you with your deployment.</p>
+<p>Let&rsquo;s assume you are a medium/large company spread across the globe, with several datacentres (for this example, we&rsquo;ll have one in New York and another one in London), and you want to offer the best <strong>user experience</strong> to your employees, partners or consultants when they work remotely (in this demo, I&rsquo;ll use Citrix published apps and desktops but it can be adapted to any resources you might need to publish externally through your ADC). To lower the latency, you don&rsquo;t want someone working from Liverpool to be redirected to your New York datacentre, it should connect to your UK datacentre. But, you still want to be able to redirect this user in the US if your British datacentre has an outage.</p>
+<p>To route your users to the best location but also to minimize the impact of an issue and redirect them to any other datacentre, the GLSB may help you with this. Based on a specified mechanism, it knows where to route the users. You might want to use, among many other possibilities to use least response time (which doesn&rsquo;t mean the first ADC to respond will be the one elected&hellip;), static proximity (meaning the user will be routed based on his geographical location).</p>
+<p>GSLB is a great mechanism offered by Citrix ADC.</p>
+<p>But it has caveat.</p>
+<p>In my example, I use round-robin to use both datacentres. Each time I do a request to my GSLB URL, I am redirected to the first one, the request after to the second one, then back to the first, and so on.</p>
+<p>Let&rsquo;s say you want to use the GSLB to optimize the routing to your Citrix Gateways. The GSLB, by default, will consider New York&rsquo;s Gateway as up as long as the gateway virtual server is responding on port 443 (if Gateway is hosted on another instance) or as long as the gateway virtual server is up (if hosted on the same instance).</p>
+<p>To have a gateway appearing as up, you need only two things: a valid SSL certificate bound to the virtual server and at least one STA up.
+What about the Storefront, the authentication server, DNS server, Desktop Delivery Controllers (might be different from the STA)? It is not part of the virtual server status evaluation.</p>
+<p>In my example, my storefront server is down&hellip;</p>
+<p>&hellip; but I&rsquo;m still redirected in London, ending with a login failure (and a frustrated user).</p>
+<p>You don&rsquo;t want to route a user to a location where it would be unable to logon, or launch any resources if you use GSLB. Remember, user experience is key.</p>
+<p>To be fair, it&rsquo;s not a GSLB limitation, but a Citrix Gateway one.</p>
+<p>Thankfully, we can add monitors to the GSLB setup to leverage the feature and be able to route efficiently the users where we want and prevent them to connect to a faulty datacentre.</p>
+<p>But it requires some work.</p>
+<p>In my example, I will use the following deployment.</p>
+<p>I assume your GSLB configuration is already set up and works like a charm.</p>
+<p>I will add monitors to the following resources:</p>
+<ul>
+<li>DNS server(s)</li>
+<li>Authentication server(s), here an Active Directory server</li>
+<li>Storefront server(s)</li>
+<li>Delivery Controller(s)</li>
+</ul>
+<p>You might want to add another one(s), specially if you use two-factor authentication, or use a different one(s) depending on your deployment (like RD Gateway).</p>
+<p>As long as you understood how to proceed with one monitor, you&rsquo;ll be able to adapt to your configuration.</p>
+<p>To configure monitors, you&rsquo;ll need as many IP addresses as services you&rsquo;ll need to monitor because we&rsquo;ll have to set up load balancing virtual servers.</p>
+<p>Why just simply bind multiple monitors for the same service? Because a monitor can only target one IP address. It means you&rsquo;ll need to bind two different monitors, each one targeting one storefront server. But in case one of them goes down, the GSLB site will be considered as down, which is incorrect.</p>
+<p>Now, it&rsquo;s time to work.</p>
+<p><strong>As usual, try this in a safe environment first and adapt the configuration to your deployment.</strong></p>
+<p>First, let&rsquo;s configure each Load Balancing Virtual server in New York datacentre. You might want to use one IP address for different services, depending on the number of IP addresses you can get. It is really up to you but I recommend dedicating an address to one service.</p>
+<p>I&rsquo;ll detail everything for the DNS and then, you&rsquo;ll have all the commands with few comments depending on the service.</p>
+<ol>
+<li>
+<p>Add a Load Balancing Virtual server using the IP address 192.168.100.202</p>
+</li>
+<li>
+<p>Add your internal DNS server (mine is named NY-DNS01 and has 192.168.200.1 set as its IP address)</p>
+</li>
+<li>
+<p>Create the Load Balancing service group</p>
+</li>
+<li>
+<p>Bind your DNS server to the Load Balancing service group</p>
+</li>
+<li>
+<p>Bind your service group with your Load Balancing virtual server</p>
+</li>
+<li>
+<p>(Repeat step 2 and 4 for each DNS server you want to use in your Load Balancing virtual server)</p>
+</li>
+</ol>
+<p>Let&rsquo;s create a LB virtual server for LDAP (I won&rsquo;t create a new server and will re-use the DNS one, both services are hosted on the same server in my lab - 192.168.100.1). Note I use LDAP in my lab, it is highly recommended to use LDAPS instead in your production environment.</p>
+<p>Now, it&rsquo;s up to Storefront LB virtual server. Again, I use HTTP in my lab, use HTTPS in your production environment.</p>
+<p>And Finally, Delivery Controllers LB virtual server. You know the story, HTTP/HTTPS, lab/production&hellip;</p>
+<p>Now, you should have all your Load Balancing virtual servers up and running.</p>
+<p>Reproduce the same configuration (with specific IP addresses, of course!) in your other datacentre. In my case, I did it in London.</p>
+<p>Now, it&rsquo;s time to create the monitors and bind them to the GSLB site. ADC has great monitors ready to be used to check everything works as expected.
+For DNS monitor, we&rsquo;ll do a query for an FQDN (sf01.ny.local) and expect a specific answer (192.168.100.3) and we&rsquo;ll ask our DNS load balancing virtual server (192.168.100.202) on the DNS port (53).</p>
+<p>Then we attach the monitor to our GSLB site.</p>
+<p>For LDAP, there is an LDAP query, using credentials, here in plain text but would appear encrypted in the ns.conf then. It just expects to get a correct answer from your Active Directory server.</p>
+<p>Storefront has also a dedicated monitor (isn&rsquo;t that great, huh?). It will try to reach a store name (&ldquo;store&rdquo; like in /Citrix/&ldquo;Store&rdquo;) on your load balancing virtual server.</p>
+<p>Guess what&hellip; Yep, there is one for Desktop Delivery Controller as well (I really enjoy well-designed stuff like this).</p>
+<p>🥵 Okay, we are reaching the end. Let&rsquo;s do a GSLB synchronization to spread our monitors across our deployment.</p>
+<p>And then, let&rsquo;s check our GSLB services status on New York ADC.</p>
+<p>What if we check from London&hellip;</p>
+<p>It appears as down. As expected.
+Wait. What?</p>
+<p>Yep, this is expected. Let me explain.</p>
+<p>As soon as you start to use monitors and bound them to a GSLB Service, these monitors are created on the other GSLB Services hosted on your other GSLB Site. But they still point to the same IP addresses&hellip; which are probably not reachable by all your ADC.</p>
+<p>In my case, I use 192.168.100.0 for New York and 192.168.200.0 for London. My ADCs are in two-arms mode, one on Internet, one on its datacentre&rsquo;s LAN. But they do not communicate with the other datacentre. New York and London are sealed.</p>
+<p>I did that to highlight a disadvantage of this setup: <strong>each GSLB site has to communicate with all the IP addresses the monitors are pointing to, meaning your Load Balancing virtual servers.</strong></p>
+<p>It&rsquo;s the limitation of using the monitors. The ADC won&rsquo;t trust the other GSLB site regarding the status and will run its own monitor to check the availability of the services. Is it good or is it bad, I don&rsquo;t know. I think the monitors should be site&rsquo;s specific but Citrix implemented it that way for a purpose, I guess.</p>
+<p>But don&rsquo;t worry, more likely, your datacentres are not sealed like in my lab and would probably communicate with each other. If not, it could be only a matter of firewall rules or network routes, nothing too hard to tackle. 😊</p>
+<p>After setting a three-arms mode on my ADC, they are able to use the monitors properly.</p>
+<p>From now on, users from the UK won&rsquo;t be redirected to London as one of the services involved in the Gateway is faulty, instead, they&rsquo;ll connect to New York until the service is restored in the other datacentre. And that is great!</p>
+<p>In conclusion, with the monitors, we just improved the GSLB setup. Its first purpose was to improve the user experience by routing them to the best location (based on the chosen mechanism: least response time, static proximity, etc.) no matter resources availability but now, users won&rsquo;t be redirected to a faulty datacentre.</p>
+<p>Remember, however, you might need to work to allow your ADC to communicate with your load balancing servers to monitor them properly but the improvement for your users is worth it.</p>
+
+
+                
+
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/how-to-create-an-mcs-catalog-in-powershell/" data-toggle="tooltip" data-placement="top" title="How to create an (MCS) catalog in PowerShell">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+                
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">Table of content</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/citrix" title="citrix">
+                            citrix
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/powershell" title="powershell">
+                            powershell
+                        </a>
+                        
+                        
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+                <section>
+                    <hr>
+                    <h5>FRIENDS</h5>
+                    <ul class="list-inline">
+                        
+                        <li><a target="_blank" href="https://davidsalvatore.tech/">David Salvatore</a></li>
+                        
+                    </ul>
+                </section>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                   
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="Steven Lemonier" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+                   
+                    
+                    <li>
+                        <a href="mailto:mail@stevenlemonier.fr">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+
+                    
+                    <li>
+                        <a href="https://twitter.com/StevenLemonier/">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    
+
+                    
+
+		    
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/SLemonier">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+                    
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/stevenlemonier/">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+                </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; Steven Lemonier 2022
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'G-NVXSGY4D2B', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+</body>
+</html>

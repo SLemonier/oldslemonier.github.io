@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Windows on Steven Lemonier</title>
+    <link>https://stevenlemonier.fr/categories/windows/</link>
+    <description>Recent content in Windows on Steven Lemonier</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 02 Dec 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://stevenlemonier.fr/categories/windows/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>James Rankin&#39;s first autologon automated</title>
+      <link>https://stevenlemonier.fr/james-rankins-first-autologon-automated/</link>
+      <pubDate>Wed, 02 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://stevenlemonier.fr/james-rankins-first-autologon-automated/</guid>
+      <description>Last month, well-known Citrix Expert James Rankin released the part 3 of his new series about Windows logon time optimizations. We are all aware of logon duration and how much it can be a pain to deal with in our environments, especially since Microsoft added more and more features to its operating system.
+New versions continue to increase user logon duration and can raise up to one minute before letting users do their work.</description>
+    </item>
+    
+  </channel>
+</rss>

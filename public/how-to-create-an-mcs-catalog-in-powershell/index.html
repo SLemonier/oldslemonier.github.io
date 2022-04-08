@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Steven Lemonier">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="https://stevenlemonier.fr/img/title_powershell.jpg">
+    <meta property="twitter:image" content="https://stevenlemonier.fr/img/title_powershell.jpg" />
+    
+
+    
+    <meta name="title" content="How to create an (MCS) catalog in PowerShell" />
+    <meta property="og:title" content="How to create an (MCS) catalog in PowerShell" />
+    <meta property="twitter:title" content="How to create an (MCS) catalog in PowerShell" />
+    
+
+    
+    <meta name="description" content="For creating an MCS catalog without the GUI, you need some pre-requisites and a bunch of PowerShell commands. I detailed how to use all of them.">
+    <meta property="og:description" content="For creating an MCS catalog without the GUI, you need some pre-requisites and a bunch of PowerShell commands. I detailed how to use all of them." />
+    <meta property="twitter:description" content="For creating an MCS catalog without the GUI, you need some pre-requisites and a bunch of PowerShell commands. I detailed how to use all of them." />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="Steven, Lemonier, Citrix, PowerShell, automation, CTA">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>How to create an (MCS) catalog in PowerShell-Steven Lemonier</title>
+
+    <link rel="canonical" href="/how-to-create-an-mcs-catalog-in-powershell/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link href="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@5.15.1/css/all.css" rel="stylesheet" type="text/css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Steven Lemonier</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                    
+		    
+                        <li><a href="/top/archive/">ARCHIVE</a></li>
+                    
+                        <li><a href="/top/about/">ABOUT</a></li>
+                    
+
+                    
+		    <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/title_powershell.jpg');
+        box-shadow: inset 0px 0px 300px 200px rgba(0,0,0,0.6);
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/citrix" title="Citrix">
+                            Citrix
+                        </a>
+                        
+                        <a class="tag" href="/tags/powershell" title="PowerShell">
+                            PowerShell
+                        </a>
+                        
+                    </div>
+                    <h1>How to create an (MCS) catalog in PowerShell</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                 Steven
+                             
+                            on 
+                            Thursday, January 21, 2021
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <p><strong>Disclaimer</strong>: <em>before moving forward, I have to warn you: the following article is not entirely suitable for Public Cloud Providers. There are some specific parameters (such as the VM instance, Network Service Group and so on) that I am not able to test as I don&rsquo;t have access to Public Clouds. You may follow this article but you&rsquo;ll have to dig a bit when you&rsquo;ll create your ProvScheme.</em></p>
+<p>During my journey to migrate a site from 7.15 to 1912, I had to re-create my catalogs (some statics, some randoms using MCS) in PowerShell.</p>
+<p>When you have a couple of catalogs, you can safely do it manually but when you have a lot of them, you&rsquo;ll be safer to do so with some automation. Actually, there is a lot more properties and pre-requisites than I expected.</p>
+<p>In fact, almost half of the following steps in the GUI when creating a catalog is a dedicated PowerShell command.</p>
+<p>
+  <img src="Create-machine-catalog-wizard.png" alt="Create a new machine catalog wizard">
+
+</p>
+<p>The easy way to find how to create a catalog is, of course, to do so manually and then check in the PowerShell tab of your Citrix site. All of the commands are not necessary (Citrix likes to add logs, variables, and so on) but you&rsquo;ll get the ones you have to use.</p>
+<p>Alright, that&rsquo;s it. Thank you, folks!</p>
+<p>&hellip;</p>
+<p>Nah, I&rsquo;m kidding.</p>
+<p>I have to say, the way Citrix is doing it, it is not that clear. They refer to object by UID, or they create variables but never call them. It is more like a treasure map and you have to decrypt the message to find the path to the golden chest.</p>
+<p>You&rsquo;d expect the <a href="https://developer-docs.citrix.com/projects/citrix-virtual-apps-desktops-sdk/en/1912/">Citrix SDK for 1912</a> (or any other version) to fill the gaps, right? Well, so did I.</p>
+<p>I started with the <a href="https://developer-docs.citrix.com/projects/citrix-virtual-apps-desktops-sdk/en/1912/Broker/New-BrokerCatalog/">New-BrokerCatalog</a> command. Very detailed. About the command itself. You have all the parameters, if it is required, the type of the parameter (boolean, list of objects). You even have the related commands. Sort of.</p>
+<p>You know, if you do some PowerShell, when you have a New-Something, more likely you have Set-Something, Get-Something and, sometimes Add-Something. Yep, you guessed it. These are the related commands.</p>
+<p>You are creating an MCS catalog, which has some pre-requisites (remember the GUI when you select a hosting resource, a VM snapshot and so on). None of this is highlighted in Citrix SDK. None.</p>
+<p>But hey, this is normal, you&rsquo;re here to create a catalog. Not a Provisioning Scheme!</p>
+<p>It&rsquo;s one of the starting points for the war between Developers and Sysadmins. Yeah, I want to create a catalog. An entire catalog. Not an empty shell (shell, powershell, you have it?).</p>
+<p>So, back to the treasure map then. Or&hellip; maybe someone has already written an article about this.</p>
+<p>Lucky you!</p>
+<p>Before starting, I expect you already have configured your hosting platform (VMWare, XenServer, Hyper-V, it doesn&rsquo;t matter), as well as the resources (network, storage). It is a pre-requisite when you do an MCS catalog. It is not necessary for a static one because it is all about adding static machines to a simple catalog. In that case, Citrix SDK would have been enough.</p>
+<p>But in our case, we have work to do, so, let&rsquo;s go!</p>
+<p>First, we have to create an Identity Pool Name. The parameters you need are:</p>
+<ul>
+<li>IdentityPoolName: the name of your identity pool, to easily identify it</li>
+<li>NamingScheme: how you want to name the machine, using # to increment the name (minimum number of # is 2, maximum is 15)</li>
+<li>NamingSchemeType: numeric of alphabetic</li>
+<li>OU: where to add the machine in your Active Directory</li>
+<li>Domain: your domain</li>
+</ul>
+<p>There are other parameters (like StartCount to start the naming scheme at a specific point, 42 for instance or abc). <a href="https://developer-docs.citrix.com/projects/citrix-virtual-apps-desktops-sdk/en/1912/ADIdentity/New-AcctIdentityPool/">I let you check in the documentation if you want to add anything more to your IdentityPoolName.</a></p>
+<p>If you stick to the ones I described, your command would look like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-PowerShell" data-lang="PowerShell"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">New-AcctIdentityPool</span> -IdentityPoolName <span style="color:#f1fa8c">&#34;VDI-IdentityPoolName&#34;</span> -NamingScheme <span style="color:#f1fa8c">&#34;VDI###&#34;</span> -NamingSchemeType <span style="color:#f1fa8c">&#34;Numeric&#34;</span> -OU <span style="color:#f1fa8c">&#34;OU=VDI,OU=Citrix,DC=lab,DC=local&#34;</span> -Domain <span style="color:#f1fa8c">&#34;lab.local&#34;</span>
+</span></span></code></pre></div><p>In the GUI, it is one of the last steps. Here, we cannot move forward without it, because we have to link the IdentityPoolName to the Provisioning Scheme. This is a mandatory parameter for New-ProvScheme.</p>
+<p>Now we have set  how to name the machines, we have to set where to host them. It is called the provisioning scheme. In the GUI, it is called the &ldquo;machine management&rdquo;, where you specify if it is an MCS/PVS or a static catalog, and where to store it.</p>
+<p>The parameters you need for New-ProvScheme are:</p>
+<ul>
+<li>ProvisioningSchemeName: the name of your Provisioning Scheme, to easily identify it</li>
+<li>IdentityPoolName: the Identity Pool you want to use to name the machine, more likely the one you just created!</li>
+<li>HostingUnitName: where to store the machine, I&rsquo;ll explain you how to find it</li>
+<li>MasterImageVM: Your VM snapshot to start from, here again, I&rsquo;ll explain to how to find it</li>
+<li>VMCpuCount: specify the number of CPU of your machines</li>
+<li>VMMemoryMB: the amount of memory of your machines (in Mb)</li>
+<li>CleanOnBoot: read-only VM of not. You specify -CleanOnBoot if you want the machine to be reset at each reboot, nothing if you want to create a persistent clone</li>
+<li>UsePersonalVDiskStorage: if you want to use a Personnal Vdisk to store user&rsquo;s data</li>
+<li>UseWriteBackCache: enable the cache, you have to specify WriteBackCacheDiskSize (in Gb) and WriteBackCacheMemorySize (in Mb) if you do so</li>
+</ul>
+<p>There is, again, other parameters. <a href="https://developer-docs.citrix.com/projects/citrix-virtual-apps-desktops-sdk/en/1912/MachineCreation/New-ProvScheme/">I let you check in the documentation if you want to add anything more to your ProvScheme.</a></p>
+<p>To identify your HostingUnitName, you can refer to Hosting menu in Citrix Studio and use the resource&rsquo;s name:</p>
+<p>
+  <img src="hosting-unit-resources-name.png" alt="Hosting unit resources name">
+
+</p>
+<p>Or use Powershell:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-PowerShell" data-lang="PowerShell"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">dir </span>XDHyp:\HostingUnits | <span style="color:#8be9fd;font-style:italic">Select </span>HostingUnitName,HypervisorConnection,NetworkPath
+</span></span></code></pre></div><p>You should get something like this:</p>
+<p>
+  <img src="hosting-unit-powershell-output.png" alt="Hosting unit PowerShell command output">
+
+</p>
+<p>Simply copy the HostingUnitName you want to store your machine to.</p>
+<p>To identify your MasterImageVM, either you perfectly know where it is stored, named and how you called the snapshot you want to use (as well as the previous ones if there is because they are part of the path&hellip;).</p>
+<p>Or in Powershell:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-PowerShell" data-lang="PowerShell"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">dir </span>XDHyp:\HostingUnits\&lt;hostingUnitName&gt;\&lt;yourmasterimage&gt;.vm | <span style="color:#8be9fd;font-style:italic">Select </span>FullName,FullPath <span style="color:#6272a4">#where hostingunitname is where your VM is store, yourmasterimage the name of your VM</span>
+</span></span></code></pre></div><p>You should get something like this:</p>
+<p>
+  <img src="master-image-vm-path-powershell-output.png" alt="Master image VM path Powershell command output">
+
+</p>
+<p>Simply copy the FullPath of the snapshot you want to use.</p>
+<p>And then, you can create your Provisioning Scheme (replace HostingUnitName and MasterImageVM with the values you copied, I use CleanOnBoot and well as WriteBackCache parameters for the example):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-PowerShell" data-lang="PowerShell"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">New-ProvScheme</span> -ProvisioningSchemeName <span style="color:#f1fa8c">&#34;Windows 10 VDI&#34;</span> -IdentityPoolName <span style="color:#f1fa8c">&#34;VDI-IdentityPoolName&#34;</span> -HostingUnitName <span style="color:#f1fa8c">&#34;VDI_LUN140&#34;</span> -MasterImageVM <span style="color:#f1fa8c">&#34;XDHyp:\HostingUnits\VDI_LUN240\W10GOLD.vm\W10Gold v3.0.snapshot\W10Gold v3.1.snapshot&#34;</span> -VMCpuCount 4 -VMMemoryMB 6144 -CleanOnBoot -UseWriteBackCache -WriteBackCacheDiskSize 16 -WriteBackCacheMemorySize 512
+</span></span></code></pre></div><p>This command may take several minutes to complete because it will clone your snapshot to a temporary VM, un-personalized the machine, and then copy the VM disk on each datastore that is part of your hosting units. Depending on their number and your datastore storage speed, it may be longer.</p>
+<p>Finally, we can create our catalog. The parameters you for New-BrokerCatalog are:</p>
+<ul>
+<li>Name: the name of your Catalog, to easily identify it</li>
+<li>AllocationType: static or random machines</li>
+<li>Description: to&hellip; describe your machine catalog?</li>
+<li>ProvisioningType: manual, PVS or MCS</li>
+<li>SessionSupport: singlesession or multisession</li>
+<li>PersistUserChanges: if the user&rsquo;s data persist on the machine or are dropped</li>
+<li>ProvisioningSchemeId: the ID of your Provisioning Scheme (Yeah, I agree, it would have been easier to use the ProvisioningSchemeName)</li>
+</ul>
+<p>There is, again, other parameters. I let you check in the documentation if you want to add anything more to your Catalog.</p>
+<p>To get back your ProvisioningSchemeId, in Powershell:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-PowerShell" data-lang="PowerShell"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">$myProvSchemeID</span> = (<span style="color:#8be9fd;font-style:italic">Get-ProvScheme</span> -ProvisioningSchemeName <span style="color:#f1fa8c">&#34;Windows 10 VDI&#34;</span>).ProvisioningSchemeID
+</span></span></code></pre></div><p>If you stick to the ones I described, your command would look like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-PowerShell" data-lang="PowerShell"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">New-BrokerCatalog</span> -Name <span style="color:#f1fa8c">&#34;Windows 10 VDI&#34;</span> -Description <span style="color:#f1fa8c">&#34;Windows 10 VDI from P3X-439&#34;</span>- -AllocationType <span style="color:#f1fa8c">&#34;random&#34;</span> -ProvisioningType <span style="color:#f1fa8c">&#34;MCS&#34;</span> -SessionSupport <span style="color:#f1fa8c">&#34;SingleSession&#34;</span> -PersistUserChanges <span style="color:#f1fa8c">&#34;Discard&#34;</span> -ProvisioningSchemeId <span style="color:#8be9fd;font-style:italic">$myProvSchemeID</span>
+</span></span></code></pre></div><p>And that&rsquo;s it! Welcome to our newly created catalog!</p>
+<p>But, wait, there is no machine created, yet!</p>
+<p>You are right. It&rsquo;s a couple a click away.. or in the next article (spoiler alert, it is not just one Powershell command)!</p>
+
+
+                
+
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/james-rankins-first-autologon-automated/" data-toggle="tooltip" data-placement="top" title="James Rankin&#39;s first autologon automated">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/use-monitors-to-leverage-your-gslb-setup/" data-toggle="tooltip" data-placement="top" title="Use monitors to leverage your GSLB setup">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+                
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">Table of content</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/citrix" title="citrix">
+                            citrix
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/powershell" title="powershell">
+                            powershell
+                        </a>
+                        
+                        
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+                <section>
+                    <hr>
+                    <h5>FRIENDS</h5>
+                    <ul class="list-inline">
+                        
+                        <li><a target="_blank" href="https://davidsalvatore.tech/">David Salvatore</a></li>
+                        
+                    </ul>
+                </section>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                   
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="Steven Lemonier" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+                   
+                    
+                    <li>
+                        <a href="mailto:mail@stevenlemonier.fr">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+
+                    
+                    <li>
+                        <a href="https://twitter.com/StevenLemonier/">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    
+
+                    
+
+		    
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/SLemonier">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+                    
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/stevenlemonier/">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+                </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; Steven Lemonier 2022
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'G-NVXSGY4D2B', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+</body>
+</html>

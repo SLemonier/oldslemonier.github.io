@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>GSLB on Steven Lemonier</title>
+    <link>https://stevenlemonier.fr/tags/gslb/</link>
+    <description>Recent content in GSLB on Steven Lemonier</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 28 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://stevenlemonier.fr/tags/gslb/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Use monitors to leverage your GSLB setup</title>
+      <link>https://stevenlemonier.fr/use-monitors-to-leverage-your-gslb-setup/</link>
+      <pubDate>Wed, 28 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://stevenlemonier.fr/use-monitors-to-leverage-your-gslb-setup/</guid>
+      <description>If you&amp;rsquo;re not familiar with Citrix ADC&amp;rsquo;s GSLB feature, let me summarize in a few words how this works and might help you with your deployment.
+Let&amp;rsquo;s assume you are a medium/large company spread across the globe, with several datacentres (for this example, we&amp;rsquo;ll have one in New York and another one in London), and you want to offer the best user experience to your employees, partners or consultants when they work remotely (in this demo, I&amp;rsquo;ll use Citrix published apps and desktops but it can be adapted to any resources you might need to publish externally through your ADC).</description>
+    </item>
+    
+  </channel>
+</rss>
