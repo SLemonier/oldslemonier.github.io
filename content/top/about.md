@@ -1,4 +1,8 @@
-![](/img/zhaohuabing.png)Hi!
+<!---
+ ![](/img/zhaohuabing.png) 
+ --->
+
+Hi!
 
 My name is Steven, and I am currently a System Engineer, specialized in Citrix Technologies. I am a CCE-V for now 4 years, and I like to spend a lot of time working on ADC/ADM as well as on automation.
 
@@ -12,4 +16,4 @@ Strong people don’t put others down… They lift them up!
 
 ## Talks
 
-* [Microservice Powered Orchestration](https://www.slideshare.net/HuabingZhao/microservice-powered-orchestration-126100339) ONS, Santa Clara, 2017
+* [Citrix Converge](https://www.youtube.com/watch?v=XvQkk8bbWSE) Online, 2021

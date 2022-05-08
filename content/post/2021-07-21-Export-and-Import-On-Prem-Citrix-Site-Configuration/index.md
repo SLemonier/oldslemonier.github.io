@@ -21,7 +21,7 @@ tags:
   - 1912
   - 7.15
 URL: "export-and-import-on-prem-citrix-site-configuration"
-categories: [ "Citrix","Powershell","GSLB" ]    
+categories: [ "Citrix","Powershell","Migration" ]    
 ---
 
 **Disclaimer:** *as always, you should not run any script from someone you don't know in your production environment, especially if you're not able to understand every single line of code you execute. Run it in a safe (e.g. dev) environment first, run your tests and if it sounds ok, run another bunch of tests.*

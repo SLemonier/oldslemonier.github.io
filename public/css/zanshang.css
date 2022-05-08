@@ -190,3 +190,14 @@ button.close {
     padding: 15px 0;
     display: none;
 }
+
+figcaption {
+    font-style: italic;
+    color: grey;
+    margin-top: -25px;
+    }
+
+pre {
+        margin: 0 0 20px;
+        margin-top: -30px;
+    }

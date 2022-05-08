@@ -2,19 +2,88 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://stevenlemonier.fr/tags/application-crashing/</loc>
+    <lastmod>2022-04-28T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://stevenlemonier.fr/categories/</loc>
+    <lastmod>2022-04-28T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://stevenlemonier.fr/tags/fslogix/</loc>
+    <lastmod>2022-04-28T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://stevenlemonier.fr/categories/fslogix/</loc>
+    <lastmod>2022-04-28T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://stevenlemonier.fr/fslogix-profile-container-applications-crashing/</loc>
+    <lastmod>2022-04-28T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://stevenlemonier.fr/post/</loc>
+    <lastmod>2022-04-28T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://stevenlemonier.fr/tags/profile-container/</loc>
+    <lastmod>2022-04-28T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://stevenlemonier.fr/</loc>
+    <lastmod>2022-04-28T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://stevenlemonier.fr/tags/</loc>
+    <lastmod>2022-04-28T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://stevenlemonier.fr/tags/troubleshooting/</loc>
+    <lastmod>2022-04-28T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://stevenlemonier.fr/categories/troubleshooting/</loc>
+    <lastmod>2022-04-28T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://stevenlemonier.fr/tags/1912/</loc>
+    <lastmod>2021-07-21T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://stevenlemonier.fr/tags/7.15/</loc>
+    <lastmod>2021-07-21T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://stevenlemonier.fr/tags/citrix/</loc>
+    <lastmod>2021-07-21T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://stevenlemonier.fr/categories/citrix/</loc>
+    <lastmod>2021-07-21T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://stevenlemonier.fr/tags/daas/</loc>
+    <lastmod>2021-07-21T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://stevenlemonier.fr/export-and-import-on-prem-citrix-site-configuration/</loc>
+    <lastmod>2021-07-21T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://stevenlemonier.fr/tags/ltsr/</loc>
+    <lastmod>2021-07-21T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://stevenlemonier.fr/tags/migration/</loc>
+    <lastmod>2021-07-21T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://stevenlemonier.fr/categories/migration/</loc>
+    <lastmod>2021-07-21T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://stevenlemonier.fr/tags/powershell/</loc>
+    <lastmod>2021-07-21T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://stevenlemonier.fr/categories/powershell/</loc>
+    <lastmod>2021-07-21T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://stevenlemonier.fr/tags/script/</loc>
+    <lastmod>2021-07-21T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://stevenlemonier.fr/tags/virtual-apps-and-desktops/</loc>
+    <lastmod>2021-07-21T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://stevenlemonier.fr/tags/xenapp/</loc>
+    <lastmod>2021-07-21T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://stevenlemonier.fr/tags/xendesktop/</loc>
+    <lastmod>2021-07-21T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>https://stevenlemonier.fr/tags/adc/</loc>
     <lastmod>2021-04-28T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://stevenlemonier.fr/categories/adc/</loc>
-    <lastmod>2021-04-28T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://stevenlemonier.fr/categories/</loc>
-    <lastmod>2021-04-28T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://stevenlemonier.fr/tags/citrix/</loc>
-    <lastmod>2021-04-28T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://stevenlemonier.fr/categories/citrix/</loc>
     <lastmod>2021-04-28T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://stevenlemonier.fr/tags/gateway/</loc>
@@ -35,25 +104,10 @@
     <loc>https://stevenlemonier.fr/tags/monitors/</loc>
     <lastmod>2021-04-28T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://stevenlemonier.fr/post/</loc>
-    <lastmod>2021-04-28T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://stevenlemonier.fr/</loc>
-    <lastmod>2021-04-28T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://stevenlemonier.fr/tags/</loc>
-    <lastmod>2021-04-28T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://stevenlemonier.fr/use-monitors-to-leverage-your-gslb-setup/</loc>
     <lastmod>2021-04-28T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://stevenlemonier.fr/how-to-create-an-mcs-catalog-in-powershell/</loc>
-    <lastmod>2021-01-21T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://stevenlemonier.fr/tags/powershell/</loc>
-    <lastmod>2021-01-21T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://stevenlemonier.fr/categories/powershell/</loc>
     <lastmod>2021-01-21T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://stevenlemonier.fr/tags/autologon/</loc>
