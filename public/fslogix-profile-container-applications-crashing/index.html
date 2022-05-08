@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Steven Lemonier">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="https://stevenlemonier.fr/img/title_fslogix.png">
+    <meta property="twitter:image" content="https://stevenlemonier.fr/img/title_fslogix.png" />
+    
+
+    
+    <meta name="title" content="FSLogix profile container - Applications are crashing" />
+    <meta property="og:title" content="FSLogix profile container - Applications are crashing" />
+    <meta property="twitter:title" content="FSLogix profile container - Applications are crashing" />
+    
+
+    
+    <meta name="description" content="Resolve crashing applications using FSLogix profile container">
+    <meta property="og:description" content="Resolve crashing applications using FSLogix profile container" />
+    <meta property="twitter:description" content="Resolve crashing applications using FSLogix profile container" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="Steven, Lemonier, Citrix, PowerShell, automation, CTA">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>FSLogix profile container - Applications are crashing-Sharing knowledge and automation on Citrix topics</title>
+
+    <link rel="canonical" href="/fslogix-profile-container-applications-crashing/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link href="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@5.15.1/css/all.css" rel="stylesheet" type="text/css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Steven Lemonier</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                    
+		    
+                        <li><a href="/top/archive/">ARCHIVE</a></li>
+                    
+                        <li><a href="/top/about/">ABOUT</a></li>
+                    
+
+                    
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/title_fslogix.png');
+        box-shadow: inset 0px 0px 300px 200px rgba(0,0,0,0.6);
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/fslogix" title="FSLogix">
+                            FSLogix
+                        </a>
+                        
+                        <a class="tag" href="/tags/profile-container" title="Profile Container">
+                            Profile Container
+                        </a>
+                        
+                        <a class="tag" href="/tags/application-crashing" title="Application crashing">
+                            Application crashing
+                        </a>
+                        
+                        <a class="tag" href="/tags/troubleshooting" title="Troubleshooting">
+                            Troubleshooting
+                        </a>
+                        
+                    </div>
+                    <h1>FSLogix profile container - Applications are crashing</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                 Steven
+                             
+                            on 
+                            Thursday, April 28, 2022
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <p>Recently, we had an issue with users complaining about applications crashing in their session. Mainly, it was about the web browser we updated a couple of days earlier, along with a VDA upgrade, and, at first, everyone was pointing it our direction.</p>
+<p>You know it better than I:</p>
+<blockquote>
+<p>It&rsquo;s always Citrix fault.</p>
+</blockquote>
+<p>But looking in Windows events, something strange came up.</p>
+<p>The log was full of events ID 51 as below, talking about the disk issue.</p>
+<p>
+  <figure>
+    <img src="Eventid-51.png" alt="Event ID 51">
+    <center><figcaption>Event ID 51</figcaption></center>
+  </figure>
+
+</p>
+<p>Along with Events ID 51, there were a few events ID 15, still talking about disks.</p>
+<p>
+  <figure>
+    <img src="Eventid-15.png" alt="Event ID 15">
+    <center><figcaption>Event ID 15</figcaption></center>
+  </figure>
+
+</p>
+<p>When we checked in the Device Manager and the Disk Managers, there was no reference to the ID pointed in the event error.</p>
+<p>In the meantime, we started having the following errors:</p>
+<p>
+  <figure>
+    <img src="In-Session-user-critical-error.png" alt="In Session error - Critical error">
+    <center><figcaption>In Session error - Critical error</figcaption></center>
+  </figure>
+
+
+
+  <figure>
+    <img src="In-Session-user-device-error.png" alt="In Session error - Device error">
+    <center><figcaption>In Session error - Device Error</figcaption></center>
+  </figure>
+
+</p>
+<p>Definitely, it was not Citrix. It was related to FSlogix as the user profile (including the Desktop folder) is stored in a VHDX file. Another look in the Disk Manager confirmed what we thought: the profile disk was no longer attached to the virtual machine.</p>
+<p>From there, we checked FSLogix logs and found this, looping consistently (I reproduced the issue in my lab):</p>
+<pre tabindex="0"><code class="language-Code" data-lang="Code">[10:53:10.932][tid:00000ee4.00000ee8][INFO]           ===== Begin Session: Volume re-attach
+[10:53:10.932][tid:00000ee4.00000ee8][INFO]            Session configuration read (DWORD): SOFTWARE\FSLogix\Profiles\Sessions\S-1-5-21-2433326362-2971583358-1492716030-1109\LogonStage = &#39;5&#39;(Logon_Complete)
+[10:53:10.932][tid:00000ee4.00000ee8][INFO]            Attempting re-attach of volume: \\?\Volume{de599a7c-356f-4293-acfb-18e8da96d612}\ for SID: S-1-5-21-2433326362-2971583358-1492716030-1109
+[10:53:10.932][tid:00000ee4.00000ee8][INFO]            Configuration setting not found: SOFTWARE\FSLogix\Profiles\LogonSyncMutexTimeout.  Using default: 60000
+[10:53:10.932][tid:00000ee4.00000ee8][INFO]            Acquired reattach virtual disk lock for user marlene.sasseur (SID=S-1-5-21-2433326362-2971583358-1492716030-1109) (Elapsed time: 0)
+[10:53:10.932][tid:00000ee4.00000ee8][WARN: 00000002]  Error querying VHDReAttachFilePath (The system cannot find the file specified.)
+[10:53:10.932][tid:00000ee4.00000ee8][INFO]            VHDPath: \\FS01.homelab.local\Profiles\S-1-5-21-2433326362-2971583358-1492716030-1109_marlene.sasseur\marlene.sasseur.VHDX
+[10:53:10.932][tid:00000ee4.00000ee8][INFO]            Username: marlene.sasseur
+[10:53:10.932][tid:00000ee4.00000ee8][INFO]            Attempting re-attach as the user
+[10:53:10.932][tid:00000ee4.00000ee8][INFO]            Retry Count: 60  Retry Interval (seconds): 10
+[10:53:10.979][tid:00000ee4.00000ee8][INFO]            Successfully opened VHD file
+[10:53:11.120][tid:00000ee4.00000ee8][INFO]            VHD(x) GetVirtualDiskPhysicalPath request returning after 0 milliseconds
+[10:53:11.120][tid:00000ee4.00000ee8][INFO]            VHD(x) FindFirstVolume request returning after 0 milliseconds
+[10:53:12.030][tid:00000ee4.00000ee8][INFO]            VHD(x) loop through volumes returning after 907 milliseconds, volumes tested: 4
+[10:53:12.030][tid:00000ee4.00000ee8][INFO]            VHD(x) getVolumeGUIDFromPhysicalPath request returning after 907 milliseconds
+[10:53:12.030][tid:00000ee4.00000ee8][INFO]            VHD(x) volume online request returning after 0 milliseconds
+[10:53:12.030][tid:00000ee4.00000ee8][INFO]            VHD(x) waitForVolumeMount request returning after 1016 milliseconds
+[10:53:12.030][tid:00000ee4.00000ee8][INFO]            Volume successfully re-attached for \\FS01.homelab.local\Profiles\S-1-5-21-2433326362-2971583358-1492716030-1109_marlene.sasseur\marlene.sasseur.VHDX
+[10:53:12.077][tid:00000ee4.00000ee8][INFO]            Session configuration read (DWORD): SOFTWARE\FSLogix\Profiles\Sessions\S-1-5-21-2433326362-2971583358-1492716030-500\LogonStage = &#39;5&#39;(Logon_Complete)
+[10:53:12.077][tid:00000ee4.00000ee8][INFO]           ===== End Session: Volume re-attach
+[10:53:12.077][tid:00000ee4.00000ee8][INFO]           Volume attach event
+[10:53:12.109][tid:00000ee4.00000ee8][INFO]           Configuration setting not found: SOFTWARE\FSLogix\Profiles\ReAttachRetryCount.  Using default: 60
+[10:53:12.109][tid:00000ee4.00000ee8][INFO]           Configuration setting not found: SOFTWARE\FSLogix\Profiles\ReAttachIntervalSeconds.  Using default: 10
+</code></pre><p>The error <em>&ldquo;Error querying VHDReAttachFilePath (The system cannot find the file specified.)&rdquo;</em> is cristal clear, something went wrong with the storage where the file is stored. It was not related to the user&rsquo;s rights as it was able to open the VHDX file.</p>
+<p>A look on the storage side and we got the root cause: <strong>Storage was full</strong>.</p>
+<p>It was easy to solve: just add more storage.</p>
+<p><em>(A couple of days later, something similar happened, same applications crashing. This time, the link to the storage was lost due to scheduled maintenance, the failover killing the opened sessions).</em></p>
+<p>But I know.</p>
+<p>Why the hell our storage was not monitored?</p>
+<p>Actually, it was. But as you know with the cloud, nothing is simple.</p>
+<p>So, how can we improve the monitoring to, at least, be aware of such failure and be proactive instead of waiting for the tsunami of incidents overwhelming support teams and maybe yourselves?</p>
+<p>I&rsquo;d say, ensure your monitoring is working properly and don&rsquo;t wait for it to get down to ensure it is configured as expected: <strong>do some Chaos Engineering</strong>!</p>
+<blockquote>
+<p>Am I spoiling about something here? Yes, I am!</p>
+</blockquote>
+<p>But in the meantime, here is what I did.</p>
+<p>I know in big companies, responsibilities and teams are segregated, and you cannot have hands-on what other people do or can do.</p>
+<p>Thus, if you cannot ensure the storage team is not able to do it efficiently (and maybe it&rsquo;s not on them but on the tools or the solution they are told to use that have some limitations, as it was in our case), you have to do something on your side. To be proactive. In case of a failure, every minute counts. And it&rsquo;s your job to provide the best service you can, so, if we can do something more, we must do something more.</p>
+<p>In our situation, we decided to monitor the event ID 15 on all our VDA servers and create an alert when such an event appears. This way, we would talk directly to the storage team before the storm would come.</p>
+<p>But, hey, let&rsquo;s hope this won&rsquo;t happen again.</p>
+
+
+                
+
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/export-and-import-on-prem-citrix-site-configuration/" data-toggle="tooltip" data-placement="top" title="Export and Import On-Prem Citrix Site configuration">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+                
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">Table of content</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/citrix" title="citrix">
+                            citrix
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/powershell" title="powershell">
+                            powershell
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+                <section>
+                    <hr>
+                    <h5>FRIENDS</h5>
+                    <ul class="list-inline">
+                        
+                        <li><a target="_blank" href="https://davidsalvatore.tech/">David Salvatore</a></li>
+                        
+                    </ul>
+                </section>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                   
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="Steven Lemonier" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+                   
+                    
+                    <li>
+                        <a href="mailto:mail@stevenlemonier.fr">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+
+                    
+                    <li>
+                        <a href="https://twitter.com/StevenLemonier/">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    
+
+                    
+
+		    
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/SLemonier">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+                    
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/stevenlemonier/">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+                </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; Steven Lemonier 2022
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'G-NVXSGY4D2B', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+</body>
+</html>
