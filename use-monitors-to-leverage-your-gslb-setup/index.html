@@ -21,9 +21,9 @@
     
 
     
-    <meta name="description" content="add monitors to the GSLB setup to route efficiently the users where we want and prevent them to connect to a faulty gateway.">
-    <meta property="og:description" content="add monitors to the GSLB setup to route efficiently the users where we want and prevent them to connect to a faulty gateway." />
-    <meta property="twitter:description" content="add monitors to the GSLB setup to route efficiently the users where we want and prevent them to connect to a faulty gateway." />
+    <meta name="description" content="We can add monitors to the GSLB setup to leverage the feature and be able to route efficiently the users where we want and prevent them to connect to a faulty gateway.">
+    <meta property="og:description" content="We can add monitors to the GSLB setup to leverage the feature and be able to route efficiently the users where we want and prevent them to connect to a faulty gateway." />
+    <meta property="twitter:description" content="We can add monitors to the GSLB setup to leverage the feature and be able to route efficiently the users where we want and prevent them to connect to a faulty gateway." />
     
 
     
@@ -34,7 +34,7 @@
     <meta name="keyword"  content="Steven, Lemonier, Citrix, PowerShell, automation, CTA">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>Use monitors to leverage your GSLB setup-Steven Lemonier</title>
+    <title>Use monitors to leverage your GSLB setup-Sharing knowledge and automation on Citrix topics</title>
 
     <link rel="canonical" href="/use-monitors-to-leverage-your-gslb-setup/">
 
@@ -102,10 +102,6 @@
                         <li><a href="/top/about/">ABOUT</a></li>
                     
 
-                    
-		    <li>
-                        <a href="/search"><i class="fa fa-search"></i></a>
-		    </li>
                     
                 </ul>
             </div>
@@ -231,17 +227,45 @@
 <p>GSLB is a great mechanism offered by Citrix ADC.</p>
 <p>But it has caveat.</p>
 <p>In my example, I use round-robin to use both datacentres. Each time I do a request to my GSLB URL, I am redirected to the first one, the request after to the second one, then back to the first, and so on.</p>
+<p>
+  <figure>
+    <img src="london-newyork-landing-page.png" alt="Switching between New York and London each time&amp;hellip;">
+    <center><figcaption>Switching between New York and London each time...</figcaption></center>
+  </figure>
+
+</p>
 <p>Let&rsquo;s say you want to use the GSLB to optimize the routing to your Citrix Gateways. The GSLB, by default, will consider New York&rsquo;s Gateway as up as long as the gateway virtual server is responding on port 443 (if Gateway is hosted on another instance) or as long as the gateway virtual server is up (if hosted on the same instance).</p>
 <p>To have a gateway appearing as up, you need only two things: a valid SSL certificate bound to the virtual server and at least one STA up.
 What about the Storefront, the authentication server, DNS server, Desktop Delivery Controllers (might be different from the STA)? It is not part of the virtual server status evaluation.</p>
 <p>In my example, my storefront server is down&hellip;</p>
+<p>
+  <figure>
+    <img src="storefront-down.png" alt="&amp;hellip;even if London&amp;rsquo;s Gateway is not working">
+    <center><figcaption>...even if London&#39;s Gateway is not working</figcaption></center>
+  </figure>
+
+</p>
 <p>&hellip; but I&rsquo;m still redirected in London, ending with a login failure (and a frustrated user).</p>
-<p>You don&rsquo;t want to route a user to a location where it would be unable to logon, or launch any resources if you use GSLB. Remember, user experience is key.</p>
+<p>You don&rsquo;t want to route a user to a location where it would be unable to logon, or launch any resources if you use GSLB. Remember, <strong>user experience is key</strong>.</p>
 <p>To be fair, it&rsquo;s not a GSLB limitation, but a Citrix Gateway one.</p>
 <p>Thankfully, we can add monitors to the GSLB setup to leverage the feature and be able to route efficiently the users where we want and prevent them to connect to a faulty datacentre.</p>
 <p>But it requires some work.</p>
 <p>In my example, I will use the following deployment.</p>
+<p>
+  <figure>
+    <img src="lab-setup.png" alt="Lab setup">
+    <center><figcaption>Lab setup</figcaption></center>
+  </figure>
+
+</p>
 <p>I assume your GSLB configuration is already set up and works like a charm.</p>
+<p>
+  <figure>
+    <img src="gslb-up-running.png" alt="GSLB is up and running">
+    <center><figcaption>GSLB is up and running</figcaption></center>
+  </figure>
+
+</p>
 <p>I will add monitors to the following resources:</p>
 <ul>
 <li>DNS server(s)</li>
@@ -253,46 +277,128 @@ What about the Storefront, the authentication server, DNS server, Desktop Delive
 <p>As long as you understood how to proceed with one monitor, you&rsquo;ll be able to adapt to your configuration.</p>
 <p>To configure monitors, you&rsquo;ll need as many IP addresses as services you&rsquo;ll need to monitor because we&rsquo;ll have to set up load balancing virtual servers.</p>
 <p>Why just simply bind multiple monitors for the same service? Because a monitor can only target one IP address. It means you&rsquo;ll need to bind two different monitors, each one targeting one storefront server. But in case one of them goes down, the GSLB site will be considered as down, which is incorrect.</p>
+<p>
+  <figure>
+    <img src="one-storefront-down.png" alt="One Storefront server is down&amp;hellip;">
+    <center><figcaption>One Storefront server is down...</figcaption></center>
+  </figure>
+
+</p>
+<p>
+  <figure>
+    <img src="newyork-gslb-down.png" alt="&amp;hellip; so the NY GSLB site is down, even if one Storefront is still available">
+    <center><figcaption>... so the NY GSLB site is down, even if one Storefront is still available</figcaption></center>
+  </figure>
+
+</p>
 <p>Now, it&rsquo;s time to work.</p>
 <p><strong>As usual, try this in a safe environment first and adapt the configuration to your deployment.</strong></p>
 <p>First, let&rsquo;s configure each Load Balancing Virtual server in New York datacentre. You might want to use one IP address for different services, depending on the number of IP addresses you can get. It is really up to you but I recommend dedicating an address to one service.</p>
 <p>I&rsquo;ll detail everything for the DNS and then, you&rsquo;ll have all the commands with few comments depending on the service.</p>
 <ol>
-<li>
-<p>Add a Load Balancing Virtual server using the IP address 192.168.100.202</p>
-</li>
-<li>
-<p>Add your internal DNS server (mine is named NY-DNS01 and has 192.168.200.1 set as its IP address)</p>
-</li>
-<li>
-<p>Create the Load Balancing service group</p>
-</li>
-<li>
-<p>Bind your DNS server to the Load Balancing service group</p>
-</li>
-<li>
-<p>Bind your service group with your Load Balancing virtual server</p>
-</li>
-<li>
-<p>(Repeat step 2 and 4 for each DNS server you want to use in your Load Balancing virtual server)</p>
-</li>
+<li>Add a Load Balancing Virtual server using the IP address 192.168.100.202</li>
 </ol>
+<pre tabindex="0"><code class="language-Script" data-lang="Script">add lb vserver NY-LB-DNS DNS 192.168.100.202 53 -persistenceType NONE -cltTimeout 120
+</code></pre><ol start="2">
+<li>Add your internal DNS server (mine is named NY-DNS01 and has 192.168.200.1 set as its IP address)</li>
+</ol>
+<pre tabindex="0"><code class="language-Script" data-lang="Script">add server NY-DNS01 192.168.200.1
+</code></pre><ol start="3">
+<li>Create the Load Balancing service group</li>
+</ol>
+<pre tabindex="0"><code class="language-Script" data-lang="Script">add serviceGroup NY-LB_svcg-DNS DNS -maxClient 0 -maxReq 0 -cip DISABLED -usip NO -useproxyport NO -cltTimeout 120 -svrTimeout 120 -CKA NO -TCPB NO -CMP NO
+</code></pre><ol start="4">
+<li>Bind your DNS server to the Load Balancing service group</li>
+</ol>
+<pre tabindex="0"><code class="language-Script" data-lang="Script">bind serviceGroup NY-LB_svcg-DNS NY-DNS01 53
+</code></pre><ol start="5">
+<li>Bind your service group with your Load Balancing virtual server</li>
+</ol>
+<pre tabindex="0"><code class="language-Script" data-lang="Script">bind lb vserver NY-DNS NY-LB_svcg-DNS
+</code></pre><ol start="6">
+<li>(Repeat step 2 and 4 for each DNS server you want to use in your Load Balancing virtual server)</li>
+</ol>
+<p>
+  <figure>
+    <img src="lb-dns-up.png" alt="Now you have DNS LB virtual server">
+    <center><figcaption>Now you have a DNS LB virtual server</figcaption></center>
+  </figure>
+
+</p>
 <p>Let&rsquo;s create a LB virtual server for LDAP (I won&rsquo;t create a new server and will re-use the DNS one, both services are hosted on the same server in my lab - 192.168.100.1). Note I use LDAP in my lab, it is highly recommended to use LDAPS instead in your production environment.</p>
-<p>Now, it&rsquo;s up to Storefront LB virtual server. Again, I use HTTP in my lab, use HTTPS in your production environment.</p>
-<p>And Finally, Delivery Controllers LB virtual server. You know the story, HTTP/HTTPS, lab/production&hellip;</p>
-<p>Now, you should have all your Load Balancing virtual servers up and running.</p>
+<pre tabindex="0"><code class="language-Script" data-lang="Script">add lb vserver NY-LB-NYAP TCP 192.168.100.203 389 -persistenceType NONE -cltTimeout 9000
+add serviceGroup NY-LB_svcg-LDAP TCP -maxClient 0 -maxReq 0 -cip DISABLED -usip NO -useproxyport YES -cltTimeout 9000 -svrTimeout 9000 -CKA NO -TCPB NO -CMP NO
+bind serviceGroup NY-LB_svcg-LDAP NY-DNS01 389
+bind lb vserver NY-LB-LDAP NY-LB_svcg-LDAP
+</code></pre><p>Now, it&rsquo;s up to Storefront LB virtual server. Again, I use HTTP in my lab, use HTTPS in your production environment.</p>
+<pre tabindex="0"><code class="language-Script" data-lang="Script">add lb vserver NY-LB-SF HTTP 192.168.100.204 80 -persistenceType NONE -cltTimeout 180
+add server NY-SF01 192.168.100.3
+add serviceGroup NY-LB_svcg-SF HTTP -maxClient 0 -maxReq 0 -cip DISABLED -usip NO -useproxyport YES -cltTimeout 180 -svrTimeout 360 -CKA NO -TCPB NO -CMP NO
+bind serviceGroup NY-LB_svcg-SF NY-SF01 80
+bind lb vserver NY-LB-SF NY-LB_svcg-SF
+</code></pre><p>And Finally, Delivery Controllers LB virtual server. You know the story, HTTP/HTTPS, lab/production&hellip;</p>
+<pre tabindex="0"><code class="language-Script" data-lang="Script">add lb vserver NY-LB-DDC TCP 192.168.100.205 80 -persistenceType NONE -cltTimeout 9000
+add server NY-DDC01 192.168.100.6
+add serviceGroup NY-LB_svcg-DDC TCP -maxClient 0 -maxReq 0 -cip DISABLED -usip NO -useproxyport YES -cltTimeout 9000 -svrTimeout 9000 -CKA NO -TCPB NO -CMP NO
+bind serviceGroup NY-LB_svcg-DDC NY-DDC01 80
+bind lb vserver NY-LB-DDC NY-LB_svcg-DDC
+</code></pre><p>Now, you should have all your Load Balancing virtual servers up and running.</p>
+<p>
+  <figure>
+    <img src="all-lb-vservers-up.png" alt="First step is completed!">
+    <center><figcaption>First step is completed!</figcaption></center>
+  </figure>
+
+</p>
 <p>Reproduce the same configuration (with specific IP addresses, of course!) in your other datacentre. In my case, I did it in London.</p>
+<p>
+  <figure>
+    <img src="lb-storefront-down.png" alt="Yep, Storefront is down, I told you&amp;hellip;">
+    <center><figcaption>Yep, Storefront is down, I told you...</figcaption></center>
+  </figure>
+
+</p>
 <p>Now, it&rsquo;s time to create the monitors and bind them to the GSLB site. ADC has great monitors ready to be used to check everything works as expected.
 For DNS monitor, we&rsquo;ll do a query for an FQDN (sf01.ny.local) and expect a specific answer (192.168.100.3) and we&rsquo;ll ask our DNS load balancing virtual server (192.168.100.202) on the DNS port (53).</p>
-<p>Then we attach the monitor to our GSLB site.</p>
-<p>For LDAP, there is an LDAP query, using credentials, here in plain text but would appear encrypted in the ns.conf then. It just expects to get a correct answer from your Active Directory server.</p>
-<p>Storefront has also a dedicated monitor (isn&rsquo;t that great, huh?). It will try to reach a store name (&ldquo;store&rdquo; like in /Citrix/&ldquo;Store&rdquo;) on your load balancing virtual server.</p>
-<p>Guess what&hellip; Yep, there is one for Desktop Delivery Controller as well (I really enjoy well-designed stuff like this).</p>
-<p>🥵 Okay, we are reaching the end. Let&rsquo;s do a GSLB synchronization to spread our monitors across our deployment.</p>
-<p>And then, let&rsquo;s check our GSLB services status on New York ADC.</p>
+<pre tabindex="0"><code class="language-Script" data-lang="Script">add lb monitor NY-DNS DNS -query sf01.NY.local -queryType Address -LRTM DISABLED -destIP 192.168.100.202 -destPort 53 -IPAddress 192.168.100.3
+</code></pre><p>Then we attach the monitor to our GSLB site.</p>
+<pre tabindex="0"><code class="language-Script" data-lang="Script">bind gslb service remote.stevenlemonier.fr-NY -monitorName NY-DNS
+</code></pre><p>For LDAP, there is an LDAP query, using credentials, here in plain text but would appear encrypted in the ns.conf then. It just expects to get a correct answer from your Active Directory server.</p>
+<pre tabindex="0"><code class="language-Script" data-lang="Script">add lb monitor NY-LDAP LDAP -scriptName nsNYap.pl -dispatcherIP 127.0.0.1 -dispatcherPort 3013 -password MyS3cuR3P@ssw0rd -LRTM DISABLED -destIP 192.168.100.203 -destPort 389 -baseDN &#34;DC=NY,DC=local&#34; -bindDN sleadm@NY.local -filter cn=builtin
+bind gslb service remote.stevenlemonier.fr-NY -monitorName NY-LDAP
+</code></pre><p>Storefront has also a dedicated monitor (isn&rsquo;t that great, huh?). It will try to reach a store name (&ldquo;store&rdquo; like in /Citrix/&ldquo;Store&rdquo;) on your load balancing virtual server.</p>
+<pre tabindex="0"><code class="language-Script" data-lang="Script">add lb monitor NY-SF STOREFRONT -scriptName nssf.pl -dispatcherIP 127.0.0.1 -dispatcherPort 3013 -LRTM DISABLED -destIP 192.168.100.204 -destPort 80 -storename store
+bind gslb service remote.stevenlemonier.fr-NY -monitorName NY-SF
+</code></pre><p>Guess what&hellip; Yep, there is one for Desktop Delivery Controller as well (I really enjoy well-designed stuff like this).</p>
+<pre tabindex="0"><code class="language-Script" data-lang="Script">add lb monitor NY-DDC CITRIX-XD-DDC -LRTM DISABLED -destIP 192.168.100.205 -destPort 80
+bind gslb service remote.stevenlemonier.fr-NY -monitorName NY-DDC
+</code></pre><p>🥵 Okay, we are reaching the end. Let&rsquo;s do a GSLB synchronization to spread our monitors across our deployment.</p>
+<pre tabindex="0"><code class="language-Script" data-lang="Script">shell nsgslbautosync config -nowarn
+</code></pre><p>And then, let&rsquo;s check our GSLB services status on New York ADC.</p>
+<p>
+  <figure>
+    <img src="gslb-ny-status.png" alt="New York is UP and has 4 monitors bound 🤗">
+    <center><figcaption>New York is UP and has 4 monitors bound 🤗</figcaption></center>
+  </figure>
+
+</p>
 <p>What if we check from London&hellip;</p>
-<p>It appears as down. As expected.
-Wait. What?</p>
+<p>
+  <figure>
+    <img src="gslb-london-status.png" alt="It is seen as DOWN from the other GSLB Site&amp;hellip;">
+    <center><figcaption>It is seen as DOWN from the other GSLB Site...</figcaption></center>
+  </figure>
+
+</p>
+<p>It appears as down. As expected.</p>
+<p>Wait. What?</p>
+<p>
+  <figure>
+    <img src="lb-vservers-london-down.png" alt="All monitors are failing from London">
+    <center><figcaption>All monitors are failing from London</figcaption></center>
+  </figure>
+
+</p>
 <p>Yep, this is expected. Let me explain.</p>
 <p>As soon as you start to use monitors and bound them to a GSLB Service, these monitors are created on the other GSLB Services hosted on your other GSLB Site. But they still point to the same IP addresses&hellip; which are probably not reachable by all your ADC.</p>
 <p>In my case, I use 192.168.100.0 for New York and 192.168.200.0 for London. My ADCs are in two-arms mode, one on Internet, one on its datacentre&rsquo;s LAN. But they do not communicate with the other datacentre. New York and London are sealed.</p>
@@ -300,7 +406,28 @@ Wait. What?</p>
 <p>It&rsquo;s the limitation of using the monitors. The ADC won&rsquo;t trust the other GSLB site regarding the status and will run its own monitor to check the availability of the services. Is it good or is it bad, I don&rsquo;t know. I think the monitors should be site&rsquo;s specific but Citrix implemented it that way for a purpose, I guess.</p>
 <p>But don&rsquo;t worry, more likely, your datacentres are not sealed like in my lab and would probably communicate with each other. If not, it could be only a matter of firewall rules or network routes, nothing too hard to tackle. 😊</p>
 <p>After setting a three-arms mode on my ADC, they are able to use the monitors properly.</p>
+<p>
+  <figure>
+    <img src="ny-monitors-up-from-london.png" alt="NY monitors seen as UP from LD">
+    <center><figcaption>NY monitors seen as UP from LD</figcaption></center>
+  </figure>
+
+</p>
+<p>
+  <figure>
+    <img src="london-lb-storefront-down-from-ny.png" alt="London Storefront server seen as DOWN from NY">
+    <center><figcaption>London Storefront server seen as DOWN from NY</figcaption></center>
+  </figure>
+
+</p>
 <p>From now on, users from the UK won&rsquo;t be redirected to London as one of the services involved in the Gateway is faulty, instead, they&rsquo;ll connect to New York until the service is restored in the other datacentre. And that is great!</p>
+<p>
+  <figure>
+    <img src="gslb-is-working.png" alt="As Storefront server is DOWN in London, users are redirected to New York, thanks to the GSLB">
+    <center><figcaption>As Storefront server is DOWN in London, users are redirected to New York, thanks to the GSLB</figcaption></center>
+  </figure>
+
+</p>
 <p>In conclusion, with the monitors, we just improved the GSLB setup. Its first purpose was to improve the user experience by routing them to the best location (based on the chosen mechanism: least response time, static proximity, etc.) no matter resources availability but now, users won&rsquo;t be redirected to a faulty datacentre.</p>
 <p>Remember, however, you might need to work to allow your ADC to communicate with your load balancing servers to monitor them properly but the improvement for your users is worth it.</p>
 
@@ -315,6 +442,11 @@ Wait. What?</p>
                             Previous Post</a>
                     </li>
                     
+                    
+                    <li class="next">
+                        <a href="/export-and-import-on-prem-citrix-site-configuration/" data-toggle="tooltip" data-placement="top" title="Export and Import On-Prem Citrix Site configuration">Next
+                            Post &rarr;</a>
+                    </li>
                     
                 </ul>
                 
@@ -359,6 +491,12 @@ Wait. What?</p>
                         
                         
                         
+                        
+                        
+                        
+                        
+                        
+                        
                         <a href="/tags/citrix" title="citrix">
                             citrix
                         </a>
@@ -375,9 +513,29 @@ Wait. What?</p>
                         
                         
                         
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
                         <a href="/tags/powershell" title="powershell">
                             powershell
                         </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
                         
                         
                         

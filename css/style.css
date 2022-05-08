@@ -2710,6 +2710,12 @@ li.pingback:first-child {
     width: 500px !important;
   }
 }
+
+figcaption {
+  font-style: italic;
+  color: grey;
+  margin-top: -25px;
+  }
 /*
 
 ATTENTION:
