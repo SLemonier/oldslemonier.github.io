@@ -3,11 +3,11 @@ layout: post
 title: "Citrix Logon Simulator"
 description: "A Free and Open Source Logon Simulator for Citrix to test the launch of any published application or desktop, through a Citrix Gateway or Citrix Storefront"
 excerpt: "A Free and Open Source Logon Simulator for Citrix to test the launch of any published application or desktop, through a Citrix Gateway or Citrix Storefront"
-date: 2022-05-06
+date: 2022-05-13
 author:  " Steven"
 image: "/img/title_logonsimulator.jpg"
 thumbnail: "/img/title_logonsimulator.jpg"
-published: true 
+published: false 
 tags:
   - Citrix
   - Logon Simulator
@@ -17,6 +17,8 @@ tags:
 URL: "citrix-logon-simulator"
 categories: [ "Citrix Logon Simulator", "Automation", "Python"]    
 ---
+
+***Note:** I recommend you to read the following post but if you're only interested by the script: [here it is](https://github.com/SLemonier/Citrix-Logon-Simulator).*
 
 # An introduction
 
@@ -40,6 +42,8 @@ So I let it on a corner of the table for a better day. It came when a former col
 And I tried. And finally got it down in Python. Way more reliable and not OS-dependent.
 
 So here it is!
+
+[You can find the script here](https://github.com/SLemonier/Citrix-Logon-Simulator).
 
 # Pre-requisites
 
@@ -82,16 +86,17 @@ Before running the logon simulator, you must edit some variables to adapt it to 
 
 # Run the script
 
-Running the script is pretty straightforward, just run the following command in Powershell:
+Running the python script ([available on github](https://github.com/SLemonier/Citrix-Logon-Simulator)) is pretty straightforward, just run the following command in Powershell:
 
-```Python
+```PowerShell
 python CitrixLogonSimulator.py
 ```
 
 You'll get the following output (at least, if it goes to end!):
 
+![Script output](Script_output.png "Script output... when the resource launched properly!")
 
-What the script does:
+What the script does.
 
 It tries to resolve the URL, no need to go deeper if it's not accessible right!
 
@@ -107,9 +112,15 @@ At each stage, it will generate some events (and logs in the logfile, of course)
 - Event ID 12001, information, in case of success, with some details
 - Event ID 12002, error, in case of a failure, with some details
 
+![Logon failure generates an error event.](Logon-Failure.png "Logon failure generates an error event.")
+
 And if it worked properly, it will generate an Event ID 12000!
 
 Thus, if you understood correctly, monitor the machine the script is running on for Event ID 12002 (as an alert trigger) to be proactive with your applications/desktops availability!
+
+Here is a quick demo:
+
+{{< youtube p16roep2Cps >}}
 
 # Limitations  
 

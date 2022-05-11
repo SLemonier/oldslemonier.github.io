@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Python on Steven Lemonier</title>
+    <link>https://stevenlemonier.fr/categories/python/</link>
+    <description>Recent content in Python on Steven Lemonier</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 06 May 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://stevenlemonier.fr/categories/python/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Citrix Logon Simulator</title>
+      <link>https://stevenlemonier.fr/citrix-logon-simulator/</link>
+      <pubDate>Fri, 06 May 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://stevenlemonier.fr/citrix-logon-simulator/</guid>
+      <description>Note: I recommend you to read the following post but if you&amp;rsquo;re only interested by the script: here it is.
+An introduction I always wanted to monitor correctly the end-user experience and especially application availability. Like, at any time of the day, can my business-critical resource be opened without any issue? And if there is, at which stage does it fails? Log on to the portal? Application enumeration? At the application launch?</description>
+    </item>
+    
+  </channel>
+</rss>
