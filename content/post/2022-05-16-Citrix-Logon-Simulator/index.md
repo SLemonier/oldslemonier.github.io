@@ -3,11 +3,11 @@ layout: post
 title: "Citrix Logon Simulator"
 description: "A Free and Open Source Logon Simulator for Citrix to test the launch of any published application or desktop, through a Citrix Gateway or Citrix Storefront"
 excerpt: "A Free and Open Source Logon Simulator for Citrix to test the launch of any published application or desktop, through a Citrix Gateway or Citrix Storefront"
-date: 2022-05-13
+date: 2022-05-12
 author:  " Steven"
 image: "/img/title_logonsimulator.jpg"
 thumbnail: "/img/title_logonsimulator.jpg"
-published: false 
+published: true 
 tags:
   - Citrix
   - Logon Simulator
@@ -22,14 +22,14 @@ categories: [ "Citrix Logon Simulator", "Automation", "Python"]
 
 # An introduction
 
-I always wanted to monitor correctly the end-user experience and especially application availability. Like, at any time of the day, can my business-critical resource be opened without any issue? And if there is, at which stage does it fails? Log on to the portal? Application enumeration? At the application launch?
+I always wanted to monitor correctly the end-user experience and especially application availability. Like, at any time of the day, can my business-critical resource be opened without any issue? And if there is, at which stage does it fail? Log on to the portal? Application enumeration? At the application launch?
 
 I know there are some logon simulators available on the market. But they usually come with three majors caveats:
 - you have to pay for it
 - they are bound to a suite of applications (that you have to pay for...)
 - I was not able to have them work (and you know, when it does not work the first time, I usually decide to do it on my own)
 
-One day, I read about a guy automating an MFA form by doing OCR on his Mac. Thought it was genius and wondered if Windows could do something like that (I already had the logon simulator in mind but didn't know how to do it). It does, by default! Windows 10/11 can do a screenshot in PowerShell and run some OCR on it.
+One day, [I read about a guy automating an MFA form by doing OCR on his Mac](https://tyler.io/lets-reimplement-an-amazing-first-party-feature-in-the-dumbest-way-possible/). Thought it was genius and wondered if Windows could do something like that (I already had the logon simulator in mind but didn't know how to do it). It does, by default! Windows 10/11 can do a screenshot in PowerShell and run some OCR on it.
 
 It was great. Then I tried on a Windows Server (because I use a server for some monitoring scripts). It became a nightmare. OCR is bound to a component only available on desktop OS. I was so pissed about it!
 
@@ -132,9 +132,10 @@ Here they are (don't worry, they're not that much big of a deal):
 - supported logon process is limited to login/password
 - password is not encrypted, use a test account with very limited rights!
 - the resource to test (application or desktop) must be added to the favorites for the testing user before running the script as told earlier
-- it's not yet able to manage the logon duration, thus, it waits for 60 seconds and takes a screenshot; if your logon duration is longer (Booooh 🤭), increase the value of 'Sleep(60)'
+- it's not yet able to manage the logon duration, thus, it waits for 60 seconds and takes a screenshot; if your logon duration is longer (Booooh 🤭), increase the value of *'Sleep(60)'*
 - the script does basic OCR (I can add more processing on the image to improve the OCR), it's better to look for some text with high contrast (like black strings on white background) and to not have too much text displayed on the page
 - events generated in Windows Event Log are pretty basic, and messages can be improved (I'm open to suggestions!)
+- and as I write Windows Event Log, the script is running only on Windows, even if python runs on every OS; if you'd need the script for Linux, I can do a specific version 😉
 
 One last limitation, if you're running the script for monitoring purposes, you have to use auto logon on your machine and run the script as a logon script. It does some interactive stuff (like launching Firefox and doing a screenshot) and it cannot run as an unattended script. Sorry 😟
 
@@ -145,6 +146,6 @@ Here are some improvements I have in mind but feel free to share your suggestion
 - Improve OCR processing
 - Improve messages in Windows Event Log
 - Do a screenshot at every stage and store them for history
-- Loof for the ResourceToTest in other tabs than the landing one once application enumeration is finished (like looking in apps or desktops tabs if the resource is not added to the favorites)
+- Look for the ResourceToTest in other tabs than the landing one once application enumeration is finished (like looking in apps or desktops tabs if the resource is not added to the favorites)
 - Support MFA, but this will require your help, so, please contact me if you need such a feature!
 - Encrypt password (I have a workaround with OS variables to now have it stored in plain text in the script but this solution is not perfect)
