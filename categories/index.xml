@@ -6,7 +6,34 @@
     <description>Recent content in Categories on Steven Lemonier</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 28 Apr 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://stevenlemonier.fr/categories/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 12 May 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://stevenlemonier.fr/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Automation</title>
+      <link>https://stevenlemonier.fr/categories/automation/</link>
+      <pubDate>Thu, 12 May 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://stevenlemonier.fr/categories/automation/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Citrix Logon Simulator</title>
+      <link>https://stevenlemonier.fr/categories/citrix-logon-simulator/</link>
+      <pubDate>Thu, 12 May 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://stevenlemonier.fr/categories/citrix-logon-simulator/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Python</title>
+      <link>https://stevenlemonier.fr/categories/python/</link>
+      <pubDate>Thu, 12 May 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://stevenlemonier.fr/categories/python/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>FSLogix</title>
       <link>https://stevenlemonier.fr/categories/fslogix/</link>
