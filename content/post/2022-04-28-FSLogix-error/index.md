@@ -94,7 +94,7 @@ But in the meantime, here is what I did.
 
 I know in big companies, responsibilities and teams are segregated, and you cannot have hands-on what other people do or can do.
 
-Thus, if you cannot ensure the storage team is not able to do it efficiently (and maybe it's not on them but on the tools or the solution they are told to use that have some limitations, as it was in our case), you have to do something on your side. To be proactive. In case of a failure, every minute counts. And it's your job to provide the best service you can, so, if we can do something more, we must do something more.
+Aside the storage monitoring, we decided to also monitor those events on our side. In case of a failure, every minute counts. And it's your job to provide the best service you can, so, if we can do something more, we must do something more.
 
 In our situation, we decided to monitor the event ID 15 on all our VDA servers and create an alert when such an event appears. This way, we would talk directly to the storage team before the storm would come.
 
