@@ -20,6 +20,8 @@ categories: [ "Citrix Logon Simulator", "Automation", "Python"]
 
 ***Note:** I recommend you to read the following post but if you're only interested by the script: [here it is](https://github.com/SLemonier/Citrix-Logon-Simulator).*
 
+*Edit 6/27/2022: Sometimes, selenium can be a bit annoying. I found version 3.8 of the package resolves the issue. Pyautogui as well has somme issue at the installation on some machines, I use now a method from Pillow to do a screenshot*
+
 # An introduction
 
 I always wanted to monitor correctly the end-user experience and especially application availability. Like, at any time of the day, can my business-critical resource be opened without any issue? And if there is, at which stage does it fail? Log on to the portal? Application enumeration? At the application launch?
@@ -59,7 +61,7 @@ To run the script, you must have the following pre-requisites:
 Once all those pre-requisites are installed, you must run the following command in PowerShell to download the modules required to run Citrix Logon Simulator (the machine you running the script on must have internet access):
 
 ```Python
-pip install selenium pypiwin32 requests pyautogui Pillow pytesseract
+pip install selenium==3.8 pypiwin32 requests Pillow pytesseract
 ```
 
 To write events in Windows Event Log, the Event Source must be created first (value can be modified within the Python script, just edit the variable 'EventSource'). In Powershell, execute the following commands, as an Administrator:
