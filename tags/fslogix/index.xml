@@ -15,8 +15,8 @@
       <guid>https://stevenlemonier.fr/fslogix-profile-container-applications-crashing/</guid>
       <description>Recently, we had an issue with users complaining about applications crashing in their session. Mainly, it was about the web browser we updated a couple of days earlier, along with a VDA upgrade, and, at first, everyone was pointing it our direction.
 You know it better than I:
- It&amp;rsquo;s always Citrix fault.
- But looking in Windows events, something strange came up.
+It&amp;rsquo;s always Citrix fault.
+But looking in Windows events, something strange came up.
 The log was full of events ID 51 as below, talking about the disk issue.</description>
     </item>
     

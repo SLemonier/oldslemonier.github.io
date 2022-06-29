@@ -2,16 +2,43 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://stevenlemonier.fr/categories/</loc>
+    <lastmod>2022-06-29T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://stevenlemonier.fr/tags/chaos-engineering/</loc>
+    <lastmod>2022-06-29T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://stevenlemonier.fr/categories/chaos-engineering/</loc>
+    <lastmod>2022-06-29T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://stevenlemonier.fr/tags/chaos-monkey/</loc>
+    <lastmod>2022-06-29T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://stevenlemonier.fr/categories/chaos-monkey/</loc>
+    <lastmod>2022-06-29T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://stevenlemonier.fr/tags/citrix/</loc>
+    <lastmod>2022-06-29T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://stevenlemonier.fr/categories/citrix/</loc>
+    <lastmod>2022-06-29T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://stevenlemonier.fr/citrix-chaos-monkey-part-one/</loc>
+    <lastmod>2022-06-29T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://stevenlemonier.fr/post/</loc>
+    <lastmod>2022-06-29T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://stevenlemonier.fr/</loc>
+    <lastmod>2022-06-29T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://stevenlemonier.fr/tags/</loc>
+    <lastmod>2022-06-29T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>https://stevenlemonier.fr/tags/automation/</loc>
     <lastmod>2022-05-12T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://stevenlemonier.fr/categories/automation/</loc>
-    <lastmod>2022-05-12T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://stevenlemonier.fr/categories/</loc>
-    <lastmod>2022-05-12T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://stevenlemonier.fr/tags/citrix/</loc>
     <lastmod>2022-05-12T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://stevenlemonier.fr/categories/citrix-logon-simulator/</loc>
@@ -26,19 +53,10 @@
     <loc>https://stevenlemonier.fr/tags/logon-simulator/</loc>
     <lastmod>2022-05-12T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://stevenlemonier.fr/post/</loc>
-    <lastmod>2022-05-12T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://stevenlemonier.fr/categories/python/</loc>
     <lastmod>2022-05-12T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://stevenlemonier.fr/</loc>
-    <lastmod>2022-05-12T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://stevenlemonier.fr/tags/storefront/</loc>
-    <lastmod>2022-05-12T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://stevenlemonier.fr/tags/</loc>
     <lastmod>2022-05-12T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://stevenlemonier.fr/tags/application-crashing/</loc>
@@ -66,9 +84,6 @@
     <lastmod>2021-07-21T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://stevenlemonier.fr/tags/7.15/</loc>
-    <lastmod>2021-07-21T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://stevenlemonier.fr/categories/citrix/</loc>
     <lastmod>2021-07-21T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://stevenlemonier.fr/tags/daas/</loc>
