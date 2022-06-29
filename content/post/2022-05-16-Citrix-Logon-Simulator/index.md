@@ -20,7 +20,7 @@ categories: [ "Citrix Logon Simulator", "Automation", "Python"]
 
 ***Note:** I recommend you to read the following post but if you're only interested by the script: [here it is](https://github.com/SLemonier/Citrix-Logon-Simulator).*
 
-*Edit 6/27/2022: Sometimes, selenium can be a bit annoying. I found version 3.8 of the package resolves the issue. Pyautogui as well has somme issue at the installation on some machines, I use now a method from Pillow to do a screenshot*
+*Edit 6/27/2022: Sometimes, selenium can be a bit annoying. I found version 3.8 of the package resolves the issue. Pyautogui as well has somme issue at the installation on some machines, I use now a method from Pillow to do a screenshot.*
 
 # An introduction
 

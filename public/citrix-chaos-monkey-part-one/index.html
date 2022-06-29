@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Steven Lemonier">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="https://stevenlemonier.fr/img/title_citrixchaosmonkey.jpg">
+    <meta property="twitter:image" content="https://stevenlemonier.fr/img/title_citrixchaosmonkey.jpg" />
+    
+
+    
+    <meta name="title" content="Citrix Chaos Monkey - Part One" />
+    <meta property="og:title" content="Citrix Chaos Monkey - Part One" />
+    <meta property="twitter:title" content="Citrix Chaos Monkey - Part One" />
+    
+
+    
+    <meta name="description" content="First part of a serie about Chaos Engineering for experimenting your Citrix environment resiliency">
+    <meta property="og:description" content="First part of a serie about Chaos Engineering for experimenting your Citrix environment resiliency" />
+    <meta property="twitter:description" content="First part of a serie about Chaos Engineering for experimenting your Citrix environment resiliency" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="Steven, Lemonier, Citrix, PowerShell, automation, CTA">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>Citrix Chaos Monkey - Part One-Sharing knowledge and automation on Citrix topics</title>
+
+    <link rel="canonical" href="/citrix-chaos-monkey-part-one/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link href="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@5.15.1/css/all.css" rel="stylesheet" type="text/css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    
+
+    
+<script data-id="matomo-tracking" data-matomo-tracking-url='https://matomo.stevenlemonier.fr' data-matomo-tracking-id='1' src="/js/matomo-tracking.min.d8e1498fb42aa6048c4db4ac8451d0141fe4a0a83a1b4857df2a67a0cabd350a.js" integrity="sha256-2OFJj7QqpgSMTbSshFHQFB/koKg6G0hX3ypnoMq9NQo=" crossorigin="anonymous" defer></script>
+</head>
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Steven Lemonier</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                    
+		    
+                        <li><a href="/top/archive/">ARCHIVE</a></li>
+                    
+                        <li><a href="/top/about/">ABOUT</a></li>
+                    
+
+                    
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/title_citrixchaosmonkey.jpg');
+        box-shadow: inset 0px 0px 300px 200px rgba(0,0,0,0.6);
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/citrix" title="Citrix">
+                            Citrix
+                        </a>
+                        
+                        <a class="tag" href="/tags/chaos-monkey" title="Chaos Monkey">
+                            Chaos Monkey
+                        </a>
+                        
+                        <a class="tag" href="/tags/chaos-engineering" title="Chaos Engineering">
+                            Chaos Engineering
+                        </a>
+                        
+                    </div>
+                    <h1>Citrix Chaos Monkey - Part One</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                 Steven
+                             
+                            on 
+                            Wednesday, June 29, 2022
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <p>If you’re not familiar with Chaos Engineering, let’s start with the definition:</p>
+<p>Chaos engineering is the discipline of experimenting on a distributed system to build confidence in the system&rsquo;s capability to withstand turbulent and unexpected conditions in production, <a href="https://en.wikipedia.org/wiki/Chaos_engineering">according to Wikipedia</a>.</p>
+<p>It might sound pretty similar to &ldquo;Disaster Recovery Plan&rdquo; but it’s actually far from it.
+In such a situation, companies tend to test how they can restore quickly the service in case of a massive failure, like the loss of a data center or a building.
+They validate procedures and so on in a very controlled environment. They plan the simulation, agree with every team involved on when to start and they start the plan in another environment, split from the production. Without any &ldquo;real-life pressure&rdquo;.</p>
+<p>Even if I heard of a company than runs its production one week a month in its DRP-restored environment, this is uncommon.</p>
+<p>And again, controlled, from the start to the finish line. And everyone is aware. Even partners like networking companies.</p>
+<p><a href="https://principlesofchaos.org/">Chaos Engineering</a>, on the other hand, is different.</p>
+<p>Your production environment runs, and from time to time, an automated tool generates some issues. On his own. Without warning anyone about the failure it is about to generate or had generated.</p>
+<p>It starts from shutting down a service or a virtual machine to even generating latency on the network or databases for the most advanced ones.</p>
+<p>Only the Chaos Engineering team knows what their tool is capable of, but they don’t know when it will do something or what.</p>
+<p>This is the ultimate confidence in your infrastructure and your response teams!</p>
+<p>Chaos Engineering started with Netflix, releasing in 2013, after they migrated to the Cloud, their <a href="https://github.com/Netflix/SimianArmy">Simian Army</a>, evolving later on to the <a href="https://github.com/netflix/chaosmonkey">Chaos Monkey</a>. With this migration, they found their infrastructure was becoming more and more complex (something cloud providers are not telling you). And they were afraid of not being capable of identifying issues and resolving them without impacting millions of users watching their TV shows on Netflix.</p>
+<p>They imagine the tool like “What if we let a crazy monkey do shitty things in our data center, like pulling cable, powering off machines, and so on, would we be able to survive?”
+The tool then evolved to the Simian Army, with each species specified in a sort of failure they generate.</p>
+<p>Guess what the Chaos Gorilla is supposed to do. 😁</p>
+<p>Of course, the goal of all of this is to be sure the systems, and the services you build are resilient. But at any time. Without impacting the end-user experience.</p>
+<p>But beyond that, why should you do Chaos Engineering?</p>
+<ul>
+<li>First, of course, is to test your monitoring.
+<ul>
+<li>Are proper alerts sent at the correct time? (I have in mind an SSL certificate about to expire, luckily, my colleague remembered it was at that time of the year he used to renew it, he looked at it and found the certificate was about to expire 4 days later. The monitoring server supposed to check that was “off”)</li>
+<li>What is the point of breaking stuff if you’re not able to detect the failures? With Chaos Engineering, you ensure you properly monitor your infrastructure.</li>
+</ul>
+</li>
+<li>Then, measure your response
+<ul>
+<li>Are people trained enough to know how to handle generated alerts?</li>
+<li>Do they know how to respond?
+<ul>
+<li>Is the Documentation available?</li>
+<li>Do they know where it is? It is easy to put your hands on?</li>
+<li>Do they provide sufficient troubleshooting?</li>
+<li>Do they know who to escalate to? Which information to provide to the escalation team?</li>
+</ul>
+</li>
+<li>Is it possible to do some auto-remediation?</li>
+</ul>
+</li>
+<li>How many time do they need to fix a situation?
+<ul>
+<li>Are they able to find a relevant workaround to mitigate the issue? Can it be automated?</li>
+<li>The more they are trained to respond, the more confident they are when they face a failure, and the more confident other people will be in your service’s quality/resilience to resolve an issue</li>
+<li>The more you know what can happen to your infrastructure and how to respond, the less you will be subject to the stress of uncertainty</li>
+</ul>
+</li>
+<li>And finally, you can continuously improve your processes
+<ul>
+<li>It allows you to improve monitors, threshold, documentation, and put in place auto-remediation when possible and test all of this!</li>
+<li>You improve your Chaos Monkey and monitoring each time a new “root cause” is identified and reproducible</li>
+<li>You identify dependencies and impacts, and put in place monitors/alerts to be “aware” of failure outside of your scope but impacting your service (in the rush, other teams don’t think to warn other impacted teams when they are entirely focused on the resolution of their faulty service)</li>
+<li>You can imagine new ways to monitor your end-user experience (Check my Citrix Logon Simulator for instance ;))</li>
+</ul>
+</li>
+</ul>
+<p>Basically, it means creating trouble! And work to mitigate them.</p>
+<p>You can start small, one step at a time:</p>
+<ul>
+<li>Generate CPU and Memory peaks</li>
+<li>Stop services</li>
+<li>Kill TCP connections</li>
+<li>Alter data</li>
+</ul>
+<p>And later on, you’ll add latency and more complicated stuff. But only when you know your basics are trustworthy.</p>
+<p>Of course, you should start by training your Chaos Monkey in a DEV environment first. So, if you break things, at least your end users won’t complain about your first tries (and your first un-properly monitored services going down 😁).</p>
+<p>Let’s be honest, it does sound fun to break things on purpose, doesn’t it? 😉
+Some companies event organize <a href="http://days-of-chaos.com/">a contest for their teams around chaos engineering</a>, with a commented live stream of the event.</p>
+<p>In the next series of articles, I’ll share my Citrix Chaos Monkey and how to use them to train yourself or break things randomly in your Citrix infrastructure. We’ll start small, with the Licensing server and then, we’ll move to other components.</p>
+<p>Stay tuned guys!</p>
+
+
+                
+
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/citrix-logon-simulator/" data-toggle="tooltip" data-placement="top" title="Citrix Logon Simulator">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+                
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">Table of content</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/citrix" title="citrix">
+                            citrix
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/gateway" title="gateway">
+                            gateway
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/powershell" title="powershell">
+                            powershell
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+                <section>
+                    <hr>
+                    <h5>FRIENDS</h5>
+                    <ul class="list-inline">
+                        
+                        <li><a target="_blank" href="https://davidsalvatore.tech/">David Salvatore</a></li>
+                        
+                    </ul>
+                </section>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                   
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="Steven Lemonier" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+                   
+                    
+                    <li>
+                        <a href="mailto:mail@stevenlemonier.fr">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+
+                    
+                    <li>
+                        <a href="https://twitter.com/StevenLemonier/">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    
+
+                    
+
+		    
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/SLemonier">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+                    
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/stevenlemonier/">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+                </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; Steven Lemonier 2022
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+</body>
+</html>

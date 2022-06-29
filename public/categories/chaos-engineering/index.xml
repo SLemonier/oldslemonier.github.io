@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Chaos Engineering on Steven Lemonier</title>
+    <link>https://stevenlemonier.fr/categories/chaos-engineering/</link>
+    <description>Recent content in Chaos Engineering on Steven Lemonier</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 29 Jun 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://stevenlemonier.fr/categories/chaos-engineering/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Citrix Chaos Monkey - Part One</title>
+      <link>https://stevenlemonier.fr/citrix-chaos-monkey-part-one/</link>
+      <pubDate>Wed, 29 Jun 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://stevenlemonier.fr/citrix-chaos-monkey-part-one/</guid>
+      <description>If you’re not familiar with Chaos Engineering, let’s start with the definition:
+Chaos engineering is the discipline of experimenting on a distributed system to build confidence in the system&amp;rsquo;s capability to withstand turbulent and unexpected conditions in production, according to Wikipedia.
+It might sound pretty similar to &amp;ldquo;Disaster Recovery Plan&amp;rdquo; but it’s actually far from it. In such a situation, companies tend to test how they can restore quickly the service in case of a massive failure, like the loss of a data center or a building.</description>
+    </item>
+    
+  </channel>
+</rss>

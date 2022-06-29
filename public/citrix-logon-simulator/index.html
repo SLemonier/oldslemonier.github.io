@@ -68,7 +68,7 @@
     
 
     
-<script data-id="matomo-tracking" data-matomo-tracking-url='https://matomo.stevenlemonier.fr' data-matomo-tracking-id='1' src="/js/matomo-tracking.min.0233dfa4a52fb004c1aaf38afcf0a95b1f3cf56fee2c44cf214cbf9adb5e0db0.js" integrity="sha256-AjPfpKUvsATBqvOK/PCpWx889W/uLETPIUy/mtteDbA=" crossorigin="anonymous" defer></script>
+<script data-id="matomo-tracking" data-matomo-tracking-url='https://matomo.stevenlemonier.fr' data-matomo-tracking-id='1' src="/js/matomo-tracking.min.d8e1498fb42aa6048c4db4ac8451d0141fe4a0a83a1b4857df2a67a0cabd350a.js" integrity="sha256-2OFJj7QqpgSMTbSshFHQFB/koKg6G0hX3ypnoMq9NQo=" crossorigin="anonymous" defer></script>
 </head>
 
 
@@ -216,6 +216,7 @@
 
                 
                 <p><em><strong>Note:</strong> I recommend you to read the following post but if you&rsquo;re only interested by the script: <a href="https://github.com/SLemonier/Citrix-Logon-Simulator">here it is</a>.</em></p>
+<p><em>Edit 6/27/2022: Sometimes, selenium can be a bit annoying. I found version 3.8 of the package resolves the issue. Pyautogui as well has somme issue at the installation on some machines, I use now a method from Pillow to do a screenshot.</em></p>
 <h1 id="an-introduction">An introduction</h1>
 <p>I always wanted to monitor correctly the end-user experience and especially application availability. Like, at any time of the day, can my business-critical resource be opened without any issue? And if there is, at which stage does it fail? Log on to the portal? Application enumeration? At the application launch?</p>
 <p>I know there are some logon simulators available on the market. But they usually come with three majors caveats:</p>
@@ -245,7 +246,7 @@
 <li>you <strong>MUST</strong> enable HTML5 receiver as the script does not rely on Citrix Workspace App</li>
 </ul>
 <p>Once all those pre-requisites are installed, you must run the following command in PowerShell to download the modules required to run Citrix Logon Simulator (the machine you running the script on must have internet access):</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Python" data-lang="Python"><span style="display:flex;"><span>pip install selenium pypiwin32 requests pyautogui Pillow pytesseract
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Python" data-lang="Python"><span style="display:flex;"><span>pip install selenium<span style="color:#ff79c6">==</span><span style="color:#bd93f9">3.8</span> pypiwin32 requests Pillow pytesseract
 </span></span></code></pre></div><p>To write events in Windows Event Log, the Event Source must be created first (value can be modified within the Python script, just edit the variable &lsquo;EventSource&rsquo;). In Powershell, execute the following commands, as an Administrator:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-PowerShell" data-lang="PowerShell"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">$eventsource</span> = <span style="color:#f1fa8c">&#34;Citrix.LogonSimulator&#34;</span> <span style="color:#6272a4">#Align the value with the one you edited in the Python script</span>
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">$EventLogSourceParams</span> = @{
@@ -340,6 +341,11 @@
                     </li>
                     
                     
+                    <li class="next">
+                        <a href="/citrix-chaos-monkey-part-one/" data-toggle="tooltip" data-placement="top" title="Citrix Chaos Monkey - Part One">Next
+                            Post &rarr;</a>
+                    </li>
+                    
                 </ul>
                 
 
@@ -374,6 +380,10 @@
                     <hr class="hidden-sm hidden-xs">
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
+                        
+                        
+                        
+                        
                         
                         
                         
